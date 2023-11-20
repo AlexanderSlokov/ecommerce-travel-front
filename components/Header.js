@@ -4,7 +4,7 @@ import styled from "styled-components";
 import CenterModifier from "@/components/CenterModifier";
 
 const StyledHeader = styled.header`
-    background-color: #353ba7;
+    background-color: #01051e;
 `;
 
 const StyledNav = styled.nav`
@@ -41,6 +41,7 @@ return (
                     <NavLink href={'/account'}>Account</NavLink>
                     <NavLink href={'/cart'}>Cart(0)</NavLink>
                 </StyledNav>
+
             </Wrapper>
         </CenterModifier>
     </StyledHeader>
