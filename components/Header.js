@@ -14,6 +14,8 @@ const StyledNav = styled.nav`
 const Logo = styled(Link)`
   color: azure;
   text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
 `;
 
 const Wrapper = styled.div`
@@ -31,7 +33,7 @@ return (
     <StyledHeader>
         <CenterModifier>
             <Wrapper>
-                <Logo href={'/'}>TourFlare</Logo>
+                <Logo href={'/'}>Tour de Flare</Logo>
 
                 <StyledNav>
                     {/*Link for our homepage, so this has only slash*/}
