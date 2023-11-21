@@ -24,6 +24,7 @@ const WhiteBox = styled.div`
     max-height: 100%;
   };
 `;
+
 export default function ProductBox({_id, title,description,destination,
                                    price, startDate, endDate, capacity, images,
                                    category, properties}) {
