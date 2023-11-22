@@ -25,7 +25,12 @@ export function CartContextProvider({children}) {
 
     // Count how many products added
     function addProduct(productId) {
-        setCartProducts(prev => [...prev, productId])
+        setCartProducts(prev => {
+            // Check if the product is already in the cart
+            if (!prev.includes(productId)) {
+                return [...prev, productId];
+            }
+        });
     }
 
 

@@ -54,7 +54,7 @@ export default function Featured({product}) {
     const {addProduct} = useContext(CartContext);
 
     function addFeaturedToCart () {
-        addProduct (product._id);
+        addProduct(product._id);
 
     }
 
