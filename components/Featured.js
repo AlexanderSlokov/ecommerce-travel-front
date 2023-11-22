@@ -3,6 +3,9 @@ import CenterModifier from "@/components/CenterModifier";
 import Button from "@/components/Button";
 import ButtonLink from "@/components/ButtonLink";
 import CartIcon from "@/components/icons/Cart";
+import {useContext} from "react";
+import {CartContext} from "@/components/CartContext";
+import {set} from "mongoose";
 
 const BackGround = styled.div`
     background-color: #01051e;
@@ -48,6 +51,13 @@ const ButtonsWrapper = styled.div`
 `;
 
 export default function Featured({product}) {
+    const {addProduct} = useContext(CartContext);
+
+    function addFeaturedToCart () {
+        addProduct (product._id);
+
+    }
+
     return(
         <BackGround>
             <CenterModifier>
@@ -63,7 +73,7 @@ export default function Featured({product}) {
 
                             <ButtonsWrapper>
                                 <ButtonLink href = {'/products/' + product._id} outline={1} white={1}>Find out more</ButtonLink>
-                                <Button white>
+                                <Button white onClick={addFeaturedToCart}>
                                     <CartIcon/>
                                     Add this to your plan!
                                 </Button>

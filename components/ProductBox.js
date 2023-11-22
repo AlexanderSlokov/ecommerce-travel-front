@@ -1,18 +1,22 @@
 import styled from "styled-components";
 import Button from "@/components/Button";
-
+import Link from "next/link"
+import {useContext} from "react";
+import {CartContext} from "@/components/CartContext";
 
 const ProductWrapper  = styled.div`
 
 `;
 
-const Title = styled.h2`
+const Title = styled(Link)`
   font-weight: normal;
   font-size: .9rem;
   margin: 0;
+  color: inherit;
+  text-decoration: none;
 `;
 
-const WhiteBox = styled.div`
+const WhiteBox = styled(Link)`
   background-color: #fff;
   padding: 20px;
   height: 120px;
@@ -40,7 +44,7 @@ const PriceRow = styled.div`
 
 const Price = styled.div`
     font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 function numberWithCommas(price) {
@@ -50,24 +54,28 @@ function numberWithCommas(price) {
 export default function ProductBox({_id, title,description,destination,
                                    price, startDate, endDate, capacity, images,
                                    category, properties}) {
+    const url = '/product/' + _id;
+    const {addProduct} = useContext(CartContext);
 
     return(
         <ProductWrapper>
-            <WhiteBox>
+            <WhiteBox href={url}>
                 <div>
                     <img src={images[0]} alt=""/>
                 </div>
             </WhiteBox>
 
             <ProductInfoBox>
-                <Title>{title}</Title>
+                <Title href={''}>{title}</Title>
                 <PriceRow>
                     <Price>
                         VND {numberWithCommas(price)}
                     </Price>
 
                     <div>
-                        <Button primary outline>Explore</Button>
+                        <Button primary outline
+                        onClick={() => addProduct(_id) }
+                        >Explore</Button>
                     </div>
                 </PriceRow>
             </ProductInfoBox>
