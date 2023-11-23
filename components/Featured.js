@@ -64,7 +64,7 @@ export default function Featured({product}) {
                 <ColumnsWrapper>
                     <Column>
                         <div>
-
+                            <h2>On the spotlight of this month:</h2>
                             <Title> {product.title}</Title>
 
                             <Desc>

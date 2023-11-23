@@ -69,13 +69,13 @@ export default function ProductBox({_id, title,description,destination,
                 <Title href={''}>{title}</Title>
                 <PriceRow>
                     <Price>
-                        VND {numberWithCommas(price)}
+                         {numberWithCommas(price)} VND (slot)
                     </Price>
 
                     <div>
                         <Button primary outline
                         onClick={() => addProduct(_id) }
-                        >Explore</Button>
+                        >Add a slot</Button>
                     </div>
                 </PriceRow>
             </ProductInfoBox>

@@ -25,17 +25,22 @@ export function CartContextProvider({children}) {
 
     // Count how many products added
     function addProduct(productId) {
+        setCartProducts(prev => [...prev, productId]);
+    }
+
+    function removeProduct(productId) {
+        //Rewrite the value of this entity
         setCartProducts(prev => {
-            // Check if the product is already in the cart
-            if (!prev.includes(productId)) {
-                return [...prev, productId];
+            const pos = prev.indexOf(productId);
+            if (pos !== -1 ) {
+                return prev.filter((value,index) => index !== pos);
             }
+            return prev;
         });
     }
 
-
     return (
-        <CartContext.Provider value={{cartProducts, setCartProducts, addProduct}}>
+        <CartContext.Provider value={{cartProducts, setCartProducts, addProduct, removeProduct}}>
             {children}
         </CartContext.Provider>
     );
