@@ -47,30 +47,67 @@ const QuantityLabel = styled.div`
     padding: 0 5px;
 `;
 
+const AddressHolder = styled.div`
+  display: flex;
+`;
 
 function numberWithCommas(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+
+
 export default function CartPage() {
     const {cartProducts, addProduct, removeProduct} = useContext(CartContext);
     const [products, setProducts] = useState([]);
+    const [name, setName]  = useState('');
+    const [gender, setGender] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [pickUpAddress, setPickUpAddress] = useState('');
 
     useEffect(() => {
         if(cartProducts.length > 0 ) {
             axios.post('/api/cart', {ids:cartProducts}).then(response => {
                 setProducts(response.data);
             })
+        } else {
+            setProducts([]);
         }
     }, [cartProducts]);
 
+    // function checkForOverlappingTours(newProductId) {
+    //     const newProduct = products.find(p => p._id === newProductId);
+    //     const newProductStartDate = new Date(newProduct.startDate);
+    //     const newProductEndDate = new Date(newProduct.endDate);
+    //
+    //     for (const productId of cartProducts) {
+    //         const existingProduct = products.find(p => p._id === productId);
+    //         const existingProductStartDate = new Date(existingProduct.startDate);
+    //         const existingProductEndDate = new Date(existingProduct.endDate);
+    //
+    //         if (newProductStartDate <= existingProductEndDate && newProductEndDate >= existingProductStartDate) {
+    //             return true; // There is an overlap
+    //         }
+    //     }
+    //     return false; // No overlaps
+    // }
+
     function moreOfThisProduct(id) {
-        addProduct(id);
+        // Before adding a product, check for date overlaps
+        // if (checkForOverlappingTours(id)) {
+        //     // If there is an overlap, show a warning message
+        //     alert('You cannot book two tours during the same period. Please select different tour.');
+        // } else {
+            // If there is no overlap, add the product to the cart
+            addProduct(id);
+        // }
     }
 
     function lessOfThisProduct(id) {
         removeProduct(id);
     }
+
 
     let total = 0;
     for (const productId of cartProducts) {
@@ -109,10 +146,16 @@ export default function CartPage() {
                                                <img src={product.images[0]} alt=""/>
                                            </ProductImageBox>
                                            {product.title}
-                                           <label>{product.startDate}</label>
-                                           <label>{product.endDate}</label>
 
+                                           <div>From: {
+                                               new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                                                   .format(new Date(product.startDate))
+                                           } to {
+                                               new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                                                   .format(new Date(product.endDate))
+                                           }</div>
                                        </ProductInfoCell>
+
                                        <td align={"center"}>
                                            <Button
                                                onClick={() => moreOfThisProduct(product._id)
@@ -136,18 +179,45 @@ export default function CartPage() {
                        </Table>
                        )}
 
-                       <h4>Reclaimer: Make sure that you had planned accordingly to fully enjoy every locations.</h4>
-                       <h4>Although we can provide free postponement, but your experiences is very important to us.</h4>
+                       <h4>Disclaimer: Please pay attention to spend enough break time to move between locations. Although we can provide free postponement.</h4>
                    </Box>
 
                    {!!cartProducts?.length && (
                        <Box>
                            <h2>Fast address information</h2>
-                           <Input type="text" placeholder={"Your full name"}/>
-                           <Input type="text" placeholder={"Gender, as Male or Female"}/>
-                           <Input type="text" placeholder={"Phone number"}/>
-                           <Input type="text" placeholder={"Email"}/>
-                           <Input type="text" placeholder={"Address"}/>
+                           <Input
+                               type="text"
+                               placeholder={"Your full name"}
+                               value={name}
+                               onChange={ev => setName(ev.target.value)}
+                           />
+
+                           <Input
+                               type="text"
+                               placeholder={"Gender, as Male or Female"}
+                               value={gender}
+                               onChange={ev => setGender(ev.target.value)}
+                           />
+
+                           <Input
+                               type="text"
+                               placeholder={"Phone number"}
+                               value={phoneNumber}
+                               onChange={ev => setPhoneNumber(ev.target.value)}
+                           />
+                           <Input
+                               type="text"
+                               placeholder={"Email"}
+                               value={email}
+                               onChange={ev => setEmail(ev.target.value)}
+                           />
+                           <AddressHolder>
+                               <Input type="text"
+                                      placeholder={" Pickup Address"}
+                                      value={pickUpAddress}
+                                      onChange={ev => setPickUpAddress(ev.target.value)}
+                               />
+                           </AddressHolder>
                            <Button block black>Continue to payment section</Button>
                        </Box>
                    )}
