@@ -94,12 +94,31 @@ export default function CartPage() {
         }
     }
 
+    // Calculating total price of tours inside the cart.
     let total = 0;
     for (const productId of cartProducts) {
         // Find the product have that id, and take the price value, put it in the const
         const price  = products.find(p => p._id === productId)?.price || 0;
             total += price;
-                }
+    }
+
+    if (window.location.href.includes('success')) {
+        return (
+            <>
+            <Header/>
+                <CenterModifier>
+                    <ColumnsWrapper>
+                        <Box>
+                            <h1>Thanks for your interested!</h1>
+                            <p>We will email you when the tour is ready to go.</p>
+                        </Box>
+                    </ColumnsWrapper>
+                </CenterModifier>
+            </>
+        );
+    }
+
+
     return (
        <>
         <Header/>
@@ -212,7 +231,6 @@ export default function CartPage() {
                    )}
                </ColumnsWrapper>
            </CenterModifier>
-
         </>
-   );
+   )
 }
