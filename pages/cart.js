@@ -76,38 +76,23 @@ export default function CartPage() {
         }
     }, [cartProducts]);
 
-    // function checkForOverlappingTours(newProductId) {
-    //     const newProduct = products.find(p => p._id === newProductId);
-    //     const newProductStartDate = new Date(newProduct.startDate);
-    //     const newProductEndDate = new Date(newProduct.endDate);
-    //
-    //     for (const productId of cartProducts) {
-    //         const existingProduct = products.find(p => p._id === productId);
-    //         const existingProductStartDate = new Date(existingProduct.startDate);
-    //         const existingProductEndDate = new Date(existingProduct.endDate);
-    //
-    //         if (newProductStartDate <= existingProductEndDate && newProductEndDate >= existingProductStartDate) {
-    //             return true; // There is an overlap
-    //         }
-    //     }
-    //     return false; // No overlaps
-    // }
-
     function moreOfThisProduct(id) {
-        // Before adding a product, check for date overlaps
-        // if (checkForOverlappingTours(id)) {
-        //     // If there is an overlap, show a warning message
-        //     alert('You cannot book two tours during the same period. Please select different tour.');
-        // } else {
-            // If there is no overlap, add the product to the cart
             addProduct(id);
-        // }
     }
 
     function lessOfThisProduct(id) {
         removeProduct(id);
     }
 
+    async function goToPayment() {
+        const response = await axios.post('/api/checkout', {
+            name, gender, email, phoneNumber, pickUpAddress, cartProducts
+        });
+
+        if (response.data.url) {
+            window.location = response.data.url;
+        }
+    }
 
     let total = 0;
     for (const productId of cartProducts) {
@@ -167,13 +152,13 @@ export default function CartPage() {
                                            onClick={() => lessOfThisProduct(product._id)}
                                            >-</Button>
                                        </td>
-                                       <td>{numberWithCommas(cartProducts.filter(id => id === product._id).length * product.price)} VND</td>
+                                       <td>{numberWithCommas(cartProducts.filter(id => id === product._id).length * product.price)} USD</td>
                                    </tr>
                            ))}
                            <tr>
                               <td></td>
                                <td></td>
-                               <td>{numberWithCommas(total)} VND</td>
+                               <td>{numberWithCommas(total)} USD</td>
                            </tr>
                            </tbody>
                        </Table>
@@ -185,44 +170,46 @@ export default function CartPage() {
                    {!!cartProducts?.length && (
                        <Box>
                            <h2>Fast address information</h2>
-                           <Input
-                               type="text"
-                               placeholder={"Your full name"}
-                               value={name}
-                               onChange={ev => setName(ev.target.value)}
-                           />
-
-                           <Input
-                               type="text"
-                               placeholder={"Gender, as Male or Female"}
-                               value={gender}
-                               onChange={ev => setGender(ev.target.value)}
-                           />
-
-                           <Input
-                               type="text"
-                               placeholder={"Phone number"}
-                               value={phoneNumber}
-                               onChange={ev => setPhoneNumber(ev.target.value)}
-                           />
-                           <Input
-                               type="text"
-                               placeholder={"Email"}
-                               value={email}
-                               onChange={ev => setEmail(ev.target.value)}
-                           />
-                           <AddressHolder>
-                               <Input type="text"
-                                      placeholder={" Pickup Address"}
-                                      value={pickUpAddress}
-                                      onChange={ev => setPickUpAddress(ev.target.value)}
+                               <Input
+                                   type="text"
+                                   placeholder={"Your full name"}
+                                   value={name}
+                                   name={"name"}
+                                   onChange={ev => setName(ev.target.value)}
                                />
-                           </AddressHolder>
-                           <Button block black>Continue to payment section</Button>
+
+                               <Input
+                                   type="text"
+                                   placeholder={"Gender, as Male or Female"}
+                                   value={gender}
+                                   name={"gender"}
+                                   onChange={ev => setGender(ev.target.value)}
+                               />
+
+                               <Input
+                                   type="text"
+                                   placeholder={"Phone number"}
+                                   value={phoneNumber}
+                                   name={"phoneNumber"}
+                                   onChange={ev => setPhoneNumber(ev.target.value)}
+                               />
+                               <Input
+                                   type="text"
+                                   placeholder={"Email"}
+                                   value={email}
+                                   name={"email"}
+                                   onChange={ev => setEmail(ev.target.value)}
+                               />
+                               <AddressHolder>
+                                   <Input type="text"
+                                          placeholder={" Pickup Address"}
+                                          value={pickUpAddress}
+                                          name={"pickUpAddress"}
+                                          onChange={ev => setPickUpAddress(ev.target.value)}/>
+                               </AddressHolder>
+                               <Button block black onClick={goToPayment}>Continue to payment section</Button>
                        </Box>
                    )}
-
-
                </ColumnsWrapper>
            </CenterModifier>
 

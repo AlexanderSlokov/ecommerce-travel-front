@@ -118,7 +118,7 @@ export default function ProductBox({_id, title,description,destination,
                 <Title href={''}>{title}</Title>
                 <PriceRow>
                     <Price>
-                         {numberWithCommas(price)} VND (slot)
+                         {numberWithCommas(price)} USD (per slot)
                     </Price>
 
                     <div>
