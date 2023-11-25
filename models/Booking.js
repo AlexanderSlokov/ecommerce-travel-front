@@ -8,6 +8,8 @@ const BookingSchema = new Schema({
     phoneNumber:String,
     pickUpAddress:String,
     paid:Boolean,
+}, {
+    timestamps: true,
 });
 
 export const Booking = models?.Booking || model('Booking', BookingSchema);
