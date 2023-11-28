@@ -1,15 +1,13 @@
 import Header from "@/components/Header";
-import styled from "styled-components";
 import CenterModifier from "@/components/CenterModifier";
 import {mongooseConnect} from "@/lib/mongoose";
 import {Product} from "@/models/Product";
 import ProductsGrid from "@/components/ProductsGrid";
+import Title from "@/components/Title";
 
-// Session for styled components
-const Title = styled.h1`
-  font-size: 1.5rem;
+
   
-`;
+
 export default function AllProductsPage({products}) {
     // console.log({products});
     //objs undefined?

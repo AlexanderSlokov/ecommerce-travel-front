@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import Button from "@/components/Button";
 import Link from "next/link"
-import {useContext, useEffect, useState} from "react";
+import {useContext} from "react";
 import {CartContext} from "@/components/CartContext";
-import axios from "axios";
+
 
 const ProductWrapper  = styled.div`
 
@@ -48,7 +48,7 @@ const Price = styled.div`
   font-weight: 500;
 `;
 
-function numberWithCommas(price) {
+export function numberWithCommas(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
@@ -57,45 +57,7 @@ export default function ProductBox({_id, title,description,destination,
                                    category, properties}) {
 
     const url = '/product/' + _id;
-    const {addProduct, cartProducts} = useContext(CartContext);
-    const [products, setProducts] = useState([]);
-
-    useEffect(() => {
-        axios.get('/api/products') // This endpoint should return all products
-            .then(response => {
-                setProducts(response.data);
-            })
-            .catch(error => {
-                console.error("There was an error fetching the products!", error);
-            });
-    }, []); // Empty dependency array means this runs once on mount
-
-    function checkForOverlappingTours(newProductId) {
-        if (!products) {
-            console.error('Products data is not loaded yet.');
-            return false; // Or you might want to handle this case differently
-        }
-
-        const newProduct = products.find(p => p._id === newProductId);
-        if (!newProduct) {
-            console.error(`Product with ID ${newProductId} not found.`);
-            return false; // Product not found in the products array
-        }
-
-        const newProductStartDate = new Date(newProduct.startDate);
-        const newProductEndDate = new Date(newProduct.endDate);
-
-        for (const productId of cartProducts) {
-            const existingProduct = products.find(p => p._id === productId);
-            const existingProductStartDate = new Date(existingProduct.startDate);
-            const existingProductEndDate = new Date(existingProduct.endDate);
-
-            if (newProductStartDate <= existingProductEndDate && newProductEndDate >= existingProductStartDate) {
-                return true; // There is an overlap
-            }
-        }
-        return false; // No overlaps
-    }
+    const {addProduct, checkForOverlappingTours} = useContext(CartContext);
 
     const moreOfThisProduct = (newProductId) => {
         // Call checkForOverlappingTours here and handle the logic based on its return value
@@ -121,9 +83,17 @@ export default function ProductBox({_id, title,description,destination,
                          {numberWithCommas(price)} USD (per slot)
                     </Price>
 
+                    <div> From: {
+                        new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                            .format(new Date(startDate))
+                    } to {
+                        new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                            .format(new Date(endDate))
+                    }</div>
+
                     <div>
                         <Button primary outline
-                        onClick={() => moreOfThisProduct(_id) }
+                        onClick={() => moreOfThisProduct(_id)}
                         >Add a slot</Button>
                     </div>
                 </PriceRow>

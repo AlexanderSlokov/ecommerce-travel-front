@@ -51,11 +51,15 @@ const ButtonsWrapper = styled.div`
 `;
 
 export default function Featured({product}) {
-    const {addProduct} = useContext(CartContext);
+    const {addProduct, checkForOverlappingTours} = useContext(CartContext);
 
-    function addFeaturedToCart () {
-        addProduct(product._id);
-
+    const moreOfThisProduct = (newProductId) => {
+        // Call checkForOverlappingTours here and handle the logic based on its return value
+        if (checkForOverlappingTours(newProductId)) {
+            alert('This tour overlaps with another in your cart!');
+        } else {
+            addProduct(newProductId); // Add product to cart if no overlap
+        }
     }
 
     return(
@@ -73,7 +77,7 @@ export default function Featured({product}) {
 
                             <ButtonsWrapper>
                                 <ButtonLink href = {'/products/' + product._id} outline={1} white={1}>Find out more</ButtonLink>
-                                <Button white onClick={addFeaturedToCart}>
+                                <Button white onClick={() => moreOfThisProduct(product._id)}>
                                     <CartIcon/>
                                     Add this to your plan!
                                 </Button>
