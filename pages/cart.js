@@ -8,11 +8,12 @@ import axios from "axios";
 import Table from "@/components/Table";
 import Input from "@/components/Input";
 
-
-
 const ColumnsWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1.3fr .7fr;
+  grid-template-columns: 1fr;
+  @media screen and (min-width: 768px) {
+    grid-template-columns: 1.3fr .7fr;
+  }
   gap: 40px;
   margin-top: 40px;
 `;
@@ -40,11 +41,20 @@ const ProductImageBox = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-  
+  @media screen and (min-width: 768px) {
+    padding: 10px;
+  }
 `;
 
 const QuantityLabel = styled.div`
-    padding: 0 5px;
+  padding: 0 3px;
+  //display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media screen and (min-width: 768px) {
+    display: inline-block;
+  }
 `;
 
 const AddressHolder = styled.div`

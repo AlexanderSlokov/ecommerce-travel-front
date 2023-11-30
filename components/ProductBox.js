@@ -11,7 +11,7 @@ const ProductWrapper  = styled.div`
 
 const Title = styled(Link)`
   font-weight: normal;
-  font-size: .9rem;
+  font-size: 1rem;
   margin: 0;
   color: inherit;
   text-decoration: none;
@@ -37,15 +37,25 @@ const ProductInfoBox = styled.div`
 `;
 
 const PriceRow = styled.div`
+  display: block;
+  @media screen and (min-width: 768px){
     display: flex;
+  }
   align-items: center;
   justify-content: space-between;
   margin-top: 2px;
+  gap: 50px;
 `;
 
 const Price = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: right;
+  @media screen and (min-width: 768px){
     font-size: 1rem;
-  font-weight: 500;
+    font-weight: 500;
+    text-align: left;
+  }
 `;
 
 export function numberWithCommas(price) {
@@ -92,7 +102,7 @@ export default function ProductBox({_id, title,description,destination,
                     }</div>
 
                     <div>
-                        <Button primary outline
+                        <Button primary outline block
                         onClick={() => moreOfThisProduct(_id)}
                         >Add a slot</Button>
                     </div>

@@ -5,7 +5,7 @@ import ButtonLink from "@/components/ButtonLink";
 import CartIcon from "@/components/icons/Cart";
 import {useContext} from "react";
 import {CartContext} from "@/components/CartContext";
-import {set} from "mongoose";
+
 
 const BackGround = styled.div`
     background-color: #01051e;
@@ -14,9 +14,12 @@ const BackGround = styled.div`
 `;
 
 const Title = styled.h1`
-    margin: 0;
-    font-weight: normal;
-  font-size: 2.5rem;
+  margin: 0;
+  font-weight: normal;
+  font-size: 1.25rem;
+  @media screen and (min-width: 768px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const Desc =  styled.p`
@@ -25,16 +28,30 @@ const Desc =  styled.p`
 `;
 
 const ColumnsWrapper = styled.div`
-    display: grid;
-    grid-template-columns: 1.1fr .9fr;
-    gap: 40px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
     
     img{
       max-width: 100%;
+      max-height: 300px;
+      display: block;
+      margin: 0 auto;
     }
   
-    div{
-      align-items: center;
+  div:nth-child(1){
+    order: 2;
+  }
+  
+    @media screen and (min-width: 768px) {
+      grid-template-columns: 1.1fr .9fr;
+      div:nth-child(1){
+        order: 0;
+        align-items: center;
+      }
+      img{
+        max-width: 100%;
+      }
     }
 `;
 
