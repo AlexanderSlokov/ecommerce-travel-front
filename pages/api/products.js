@@ -7,14 +7,24 @@ export default async function handle(req, res) {
         await mongooseConnect();
 
         if (method === 'GET') {
+            const { categories, ...filters } = req.query;
             let response;
+
+            // If an id query is present, find one product
             if (req.query?.id) {
-                response = await Product.findOne({_id: req.query.id});
+                response = await Product.findOne({ _id: req.query.id });
             } else {
-                response = await Product.find();
+                // Otherwise, find all products with optional category and filters
+                const categoryArray = categories ? categories.split(',') : [];
+                response = await Product.find({
+                    ...(categories && { category: categoryArray }),
+                    ...filters,
+                });
             }
+            // Send the response once
             res.json(response);
         } else {
+            // Handle unsupported methods
             res.setHeader('Allow', ['GET']);
             res.status(405).end(`Method ${method} Not Allowed`);
         }
