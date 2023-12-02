@@ -45,15 +45,18 @@ export default function CategoryPage({ category, subCategories, products: origin
     );
 
     function handleFilterChange(filterName, filterValue) {
-        setFiltersValues(prev => prev.map(p => ({
-            ...p,
-            value: p.name === filterName ? filterValue : p.value,
-        })));
+        setFiltersValues(prev => {
+            return prev.map(p => ({
+               name: p.name,
+               value: p.name === filterName ? filterValue: p.value,
+
+            }));
+        });
     }
 
     useEffect(() => {
-        const catIds = [category._id, ...(subCategories?.map(c => c._id) || [])];
-        const params = new URLSearchParams();
+        const catIds = [category._id, ...(subCategories?.map(c => c._id) || [] )];
+        const params = new URLSearchParams;
         params.set('categories', catIds.join(','));
         filtersValues.forEach(f => {
             if (f.value !== 'all') {
@@ -61,7 +64,7 @@ export default function CategoryPage({ category, subCategories, products: origin
             }
         });
 
-        const url = `/api/products?${params.toString()}`;
+        const url = `/api/products?` + params.toString();
         axios.get(url)
             .then(res => {
                 setProducts(res.data); // You need to update the products state with the response
@@ -81,14 +84,14 @@ export default function CategoryPage({ category, subCategories, products: origin
                 <CategoryHeader>
                     <Title>{category.name}</Title>
                         <FilterWrapper>
-                            {category.properties.map(props => (
-                                <Filter key={props.name}>
-                                    <span>{props.name}:</span>
+                            {category.properties.map(prop => (
+                                <Filter key={prop.name}>
+                                    <span>{prop.name}:</span>
                                     <select
-                                        onChange={ev => handleFilterChange(props.name, ev.target.value)}
-                                        value={filtersValues?.find(f => f.name === props.name).value}>
+                                        onChange={ev => handleFilterChange(prop.name, ev.target.value)}
+                                        value={filtersValues?.find(f => f.name === prop.name).value}>
                                         <option value="all">All</option>
-                                        {props.values.map( values => (
+                                        {prop.values.map( values => (
                                             <option key={values} value={values}>{values}</option>
                                         ))}
                                     </select>
@@ -112,7 +115,7 @@ export async function getServerSideProps(context) {
         }
         const subCategories = await Category.find({ parent: category._id });
         const catIds = [category._id, ...subCategories.map(c => c._id)];
-        const products = await Product.find({ category: { $in: catIds } }); // Use $in operator to search for multiple IDs
+        const products = await Product.find({ category:catIds }); // Use $in operator to search for multiple IDs
 
         return {
             props: {
