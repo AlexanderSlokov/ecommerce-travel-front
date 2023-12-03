@@ -24,7 +24,7 @@ export function CartContextProvider({children}) {
     }, []);
 
     useEffect(() => {
-        axios.get('/api/products') // This endpoint should return all products
+        axios.get('/api/productsForCheckOverLapping') // This endpoint should return all products
             .then(response => {
                 setProducts(response.data);
             })
