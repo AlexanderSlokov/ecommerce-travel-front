@@ -43,6 +43,8 @@ export default function CategoryPage({ category, subCategories, products: origin
     const [filtersValues, setFiltersValues] = useState(
         category.properties.map(p => ({ name: p.name, value: 'all' }))
     );
+    const [sort, setSort] = useState('_id-desc');
+
 
     function handleFilterChange(filterName, filterValue) {
         setFiltersValues(prev => {
@@ -57,7 +59,10 @@ export default function CategoryPage({ category, subCategories, products: origin
     useEffect(() => {
         const catIds = [category._id, ...(subCategories?.map(c => c._id) || [] )];
         const params = new URLSearchParams;
+
         params.set('categories', catIds.join(','));
+        params.set('sort', sort);
+
         filtersValues.forEach(f => {
             if (f.value !== 'all') {
                 params.set(f.name, f.value);
@@ -74,7 +79,7 @@ export default function CategoryPage({ category, subCategories, products: origin
                 console.error('Failed to fetch products:', error);
             });
 
-    }, [filtersValues, category._id, subCategories]);
+    }, [filtersValues, category._id, subCategories, sort]);
 
 
     return(
@@ -96,7 +101,19 @@ export default function CategoryPage({ category, subCategories, products: origin
                                         ))}
                                     </select>
                                 </Filter>
-                            ) )}
+                            ))}
+                            <Filter>
+                                <span>Sort:</span>
+                                <select
+                                    value={sort}
+                                    onChange={ev => setSort(ev.target.value)}>
+                                    <option value={"price-asc"}>Price, lowest first</option>
+                                    <option value={"price-desc"}>Price, highest first</option>
+                                    <option value="_id-desc">Newest first</option>
+                                    <option value="_id-asc">Oldest first</option>
+                                </select>
+
+                            </Filter>
                         </FilterWrapper>
                 </CategoryHeader>
                 <ProductsGrid products={products}/>
