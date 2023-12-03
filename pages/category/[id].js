@@ -7,6 +7,8 @@ import ProductsGrid from "@/components/ProductsGrid";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Spinner from "@/components/Spinner";
+
 
 const CategoryHeader  = styled.div`
     display: flex;
@@ -40,11 +42,15 @@ const Filter = styled.div`
 
 export default function CategoryPage({ category, subCategories, products: originalProducts }) {
     const [products, setProducts] = useState(originalProducts);
-    const [filtersValues, setFiltersValues] = useState(
-        category.properties.map(p => ({ name: p.name, value: 'all' }))
-    );
-    const [sort, setSort] = useState('_id-desc');
-
+    const defaultFilterValues = category.properties.map(p => (
+        { name: p.name, value: 'all' }
+    ));
+    const [filtersValues, setFiltersValues] = useState(defaultFilterValues);
+    const defaultSorting = '_id-desc';
+    const [sort, setSort] = useState(defaultSorting);
+    // UseState for Spinner
+    const [loadingProducts, setLoadingProducts] = useState(false);
+    const [filtersChanged, setFiltersChanged] = useState(false);
 
     function handleFilterChange(filterName, filterValue) {
         setFiltersValues(prev => {
@@ -54,9 +60,13 @@ export default function CategoryPage({ category, subCategories, products: origin
 
             }));
         });
+        setFiltersChanged(true);
     }
 
     useEffect(() => {
+
+        setLoadingProducts(true);
+
         const catIds = [category._id, ...(subCategories?.map(c => c._id) || [] )];
         const params = new URLSearchParams;
 
@@ -73,13 +83,15 @@ export default function CategoryPage({ category, subCategories, products: origin
         axios.get(url)
             .then(res => {
                 setProducts(res.data); // You need to update the products state with the response
+                setLoadingProducts(false);
+
             })
             .catch(error => {
                 // Handle errors here, for example, log them or display a message
                 console.error('Failed to fetch products:', error);
             });
 
-    }, [filtersValues, category._id, subCategories, sort]);
+    }, [filtersValues, category._id, subCategories, sort, filtersChanged]);
 
 
     return(
@@ -106,7 +118,10 @@ export default function CategoryPage({ category, subCategories, products: origin
                                 <span>Sort:</span>
                                 <select
                                     value={sort}
-                                    onChange={ev => setSort(ev.target.value)}>
+                                    onChange={ev => {
+                                        setSort(ev.target.value);
+                                        setFiltersChanged(true);
+                                    }}>
                                     <option value={"price-asc"}>Price, lowest first</option>
                                     <option value={"price-desc"}>Price, highest first</option>
                                     <option value="_id-desc">Newest first</option>
@@ -116,7 +131,21 @@ export default function CategoryPage({ category, subCategories, products: origin
                             </Filter>
                         </FilterWrapper>
                 </CategoryHeader>
-                <ProductsGrid products={products}/>
+                {loadingProducts && (
+                    <Spinner fullWidth/>
+                )}
+                {!loadingProducts && (
+                    <div>
+                        {products.length > 0 && (
+                            <ProductsGrid products={products}/>
+                        )}
+                        {products.length === 0 && (
+                            <div>Sorry, No tours suit your requirements found</div>
+                        )}
+                    </div>
+
+                )}
+
             </CenterModifier>
         </>
     );
