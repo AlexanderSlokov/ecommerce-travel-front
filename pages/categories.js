@@ -93,12 +93,10 @@ export async function getServerSideProps() {
 
         const categoriesIds = [mainCatId, ...childCatIds];
 
-        const products = await Product.find(
+        categoriesProducts[mainCatId] = await Product.find(
             {category: categoriesIds},
             null,
-            {limit:3, sort:{'_id':-1}});
-
-        categoriesProducts[mainCatId] = products;
+            {limit: 3, sort: {'_id': -1}});
     }
 
     return{

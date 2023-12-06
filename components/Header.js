@@ -5,6 +5,7 @@ import CenterModifier from "@/components/CenterModifier";
 import {useContext, useState} from "react";
 import {CartContext} from "@/components/CartContext";
 import BarsIcon from "@/components/icons/Bars";
+import SearchIcon from "@/components/icons/SearchIcon";
 
 const StyledHeader = styled.header`
     background-color: #01051e;
@@ -33,6 +34,7 @@ const StyledNav = styled.nav`
         padding: 0;
       }
 `;
+
 const Logo = styled(Link)`
   color: azure;
   text-decoration: none;
@@ -53,11 +55,14 @@ const NavLink = styled(Link)`
   color: azure;
   text-decoration: none;
   padding: 10px 0;
+  min-width: 30px;
+  svg{
+    height: 20px;
+  }
   @media screen and (min-width: 768px) {
     padding: 0;
   }
 `;
-
 
 const NavButton = styled.button`
   background-color: transparent;
@@ -71,6 +76,21 @@ const NavButton = styled.button`
     display: none;
   }
 `;
+
+const SideIcons = styled.div`
+ display: flex;
+  align-items: center;
+  a{
+    display: inline-block;
+    min-width: 20px ;
+    color: azure;
+    svg{
+      width: 14px;
+      height: 14px;
+    }
+  }
+`;
+
 export default function Header() {
     const {cartProducts} = useContext(CartContext);
     const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
@@ -88,11 +108,12 @@ return (
                     <NavLink href={'/account'}>Account</NavLink>
                     <NavLink href={'/cart'}>Your plan({cartProducts.length})</NavLink>
                 </StyledNav>
-
-                <NavButton onClick={() => setMobileNavigationActive(prev => !prev)}>
-                    <BarsIcon/>
-                </NavButton>
-
+                <SideIcons>
+                    <Link href={'/search'}><SearchIcon/></Link>
+                    <NavButton onClick={() => setMobileNavigationActive(prev => !prev)}>
+                        <BarsIcon/>
+                    </NavButton>
+                </SideIcons>
             </Wrapper>
         </CenterModifier>
     </StyledHeader>
