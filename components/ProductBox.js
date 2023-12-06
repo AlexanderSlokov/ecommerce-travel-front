@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import Button from "@/components/Button";
 import Link from "next/link"
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {CartContext} from "@/components/CartContext";
+import HeartOutlineIcon from "@/components/icons/HeartOutlineIcon";
+import HeartSolidIcon from "@/components/icons/HeartSolidIcon";
+import axios from "axios";
 
 
 const ProductWrapper  = styled.div`
@@ -26,9 +29,10 @@ const WhiteBox = styled(Link)`
   align-items: center;
   justify-content: center;
   border-radius: 10px;
+  position: relative;
   img {
     max-width: 100%;
-    max-height: 140px;
+    max-height: 100px;
   };
 `;
 
@@ -58,16 +62,40 @@ const Price = styled.div`
   }
 `;
 
+const WishlistButton = styled.button`
+  border: 0;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  right: 0;
+  
+  position: absolute;
+  background: transparent;
+  
+  ${props => props.wished ? `
+    color: red;
+  ` : `
+    color: black;
+  `}
+  
+  svg{
+    width: 16px;
+  }
+  cursor: pointer;
+`;
+
 export function numberWithCommas(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export default function ProductBox({_id, title,description,destination,
-                                   price, startDate, endDate, capacity, images,
-                                   category, properties}) {
+                                   price, startDate, endDate, capacity,
+                                       images, category, properties,
+                                       wished = false}) {
 
     const url = '/product/' + _id;
     const {addProduct, checkForOverlappingTours} = useContext(CartContext);
+    const [isWished,setIsWished] = useState(wished);
 
     const moreOfThisProduct = (newProductId) => {
         // Call checkForOverlappingTours here and handle the logic based on its return value
@@ -78,10 +106,26 @@ export default function ProductBox({_id, title,description,destination,
         }
     }
 
+    function addToWishList(ev) {
+        // Stop the irrelevant event of navigating to the single product page
+        ev.preventDefault();
+        ev.stopPropagation();
+        const nextValue = !isWished;
+        // call out the api
+        axios.post('/api/wishlist', {
+            product:_id,
+        }).then(() => {});
+        setIsWished(nextValue);
+    }
+
     return(
         <ProductWrapper>
             <WhiteBox href={url}>
                 <div>
+                    <WishlistButton wished={isWished} onClick={addToWishList}>
+                        {isWished ? <HeartSolidIcon/> : <HeartOutlineIcon/>}
+                    </WishlistButton>
+
                     <img src={images?.[0]} alt=""/>
                 </div>
             </WhiteBox>

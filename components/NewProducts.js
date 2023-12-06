@@ -7,11 +7,11 @@ const Title = styled.h2`
   font-weight: 400;
   margin: 30px 0 20px;
 `;
-export default function NewProducts({products}) {
+export default function NewProducts({products, wishedProducts}) {
     return (
         <CenterModifier>
             <Title>New tours</Title>
-            <ProductsGrid products={products}/>
+            <ProductsGrid products={products} wishedProducts={wishedProducts}/>
         </CenterModifier>
 
     );
