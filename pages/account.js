@@ -1,13 +1,50 @@
 import CenterModifier from "@/components/CenterModifier";
-import Title from "@/components/Title";
 import Header from "@/components/Header";
 import {signIn, signOut, useSession} from "next-auth/react";
 import Button from "@/components/Button";
+import styled from "styled-components";
+import WhiteBox from "@/components/WhiteBox";
+import Input from "@/components/Input";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
+
+const ColsWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 40px;
+  margin: 40px 0;
+`;
+
+const AddressHolder = styled.div`
+  display: flex;
+  gap: 5px;
+`;
 
 export default function AccountPage() {
     // Provide user's section.
     const {data:session} = useSession();
+
+    const [name, setName]  = useState('');
+    const [gender, setGender] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [pickUpAddress, setPickUpAddress] = useState('');
+
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            axios.get('/api/userAccount').then(r => {
+                setName(r.data.name);
+                setGender(r.data.gender);
+                setPhoneNumber(r.data.phoneNumber);
+                setEmail(r.data.email);
+                setPickUpAddress(r.data.pickUpAddress);
+            });
+        }, 3000);
+    }, []);
+
     async function logout() {
         await signOut({callbackUrl:process.env.NEXT_PUBLIC_URL})
     }
@@ -18,26 +55,84 @@ export default function AccountPage() {
         });
     }
 
+    function saveAccountInfo (){
+        const data = {name, gender, email, phoneNumber, pickUpAddress}
+        axios.put('/api/userAccount', data);
+    }
     return(
         <>
         <Header/>
             <CenterModifier>
-                <Title>Account</Title>
-                {process.env.NEXT_PUBLIC_URL}
-                {/*// If there was in a session, log out*/}
-                {session && (
-                    <Button
-                        primary
-                        onClick={logout}
-                    >Logout</Button>
-                )}
-                {/*If not have any session, show the login*/}
-                {!session && (
-                    <Button
-                        primary
-                        onClick={login}
-                    >Logout</Button>
-                )}
+                <ColsWrapper>
+                    <div>
+                        <WhiteBox>
+                            <h2>Wishlist</h2>
+
+                        </WhiteBox>
+                    </div>
+
+                    <div>
+                        <WhiteBox>
+                            <h2>Account Detail</h2>
+
+                            <Input
+                                type="text"
+                                placeholder={"Your full name"}
+                                value={name}
+                                name={"name"}
+                                onChange={ev => setName(ev.target.value)}
+                            />
+
+                            <Input
+                                type="text"
+                                placeholder={"Gender, as Male or Female"}
+                                value={gender}
+                                name={"gender"}
+                                onChange={ev => setGender(ev.target.value)}
+                            />
+
+                            <Input
+                                type="text"
+                                placeholder={"Phone number"}
+                                value={phoneNumber}
+                                name={"phoneNumber"}
+                                onChange={ev => setPhoneNumber(ev.target.value)}
+                            />
+                            <Input
+                                type="text"
+                                placeholder={"Email"}
+                                value={email}
+                                name={"email"}
+                                onChange={ev => setEmail(ev.target.value)}
+                            />
+                            <AddressHolder>
+                                <Input type="text"
+                                       placeholder={" Pickup Address"}
+                                       value={pickUpAddress}
+                                       name={"pickUpAddress"}
+                                       onChange={ev => setPickUpAddress(ev.target.value)}/>
+                            </AddressHolder>
+
+                            <Button black block onClick={saveAccountInfo}>Save</Button>
+                            <hr/>
+                            {/*// If there was in a session, log out*/}
+                            {session && (
+                                <Button
+                                    primary
+                                    onClick={logout}
+                                >Logout</Button>
+                            )}
+                            {/*If not have any session, show the login*/}
+                            {!session && (
+                                <Button
+                                    primary
+                                    onClick={login}
+                                >Logout</Button>
+                            )}
+
+                        </WhiteBox>
+                    </div>
+                </ColsWrapper>
             </CenterModifier>
         </>
     );
