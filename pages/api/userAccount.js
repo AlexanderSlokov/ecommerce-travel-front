@@ -11,8 +11,9 @@ export default async function handle(req, res) {
         const checkedEmail = await UserAccount.findOne({userEmail:user.email});
 
         if(checkedEmail) {
+            console.log(req.body);
             res.json(await UserAccount.findByIdAndUpdate(
-                checkedEmail._id, req.body
+                checkedEmail._id, req.body,{ new: true }
             ));
         } else {
             // Create a new one
@@ -23,7 +24,7 @@ export default async function handle(req, res) {
     }
 
     if (req.method === 'GET') {
-        const checkedEmail = await UserAccount.findOne({userEmail:user.email});
+        const checkedEmail = await UserAccount.findOne({userEmail:user.email},);
         res.json(checkedEmail);
     }
 

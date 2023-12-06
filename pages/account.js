@@ -7,6 +7,7 @@ import WhiteBox from "@/components/WhiteBox";
 import Input from "@/components/Input";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Spinner from "@/components/Spinner";
 
 
 const ColsWrapper = styled.div`
@@ -34,15 +35,14 @@ export default function AccountPage() {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => {
-            axios.get('/api/userAccount').then(r => {
-                setName(r.data.name);
-                setGender(r.data.gender);
-                setPhoneNumber(r.data.phoneNumber);
-                setEmail(r.data.email);
-                setPickUpAddress(r.data.pickUpAddress);
-            });
-        }, 3000);
+        axios.get('/api/userAccount').then(r => {
+            setName(r.data?.name);
+            setGender(r.data?.gender);
+            setPhoneNumber(r.data?.phoneNumber);
+            setEmail(r.data?.email);
+            setPickUpAddress(r.data?.pickUpAddress);
+            setLoaded(true);
+        });
     }, []);
 
     async function logout() {
@@ -56,7 +56,7 @@ export default function AccountPage() {
     }
 
     function saveAccountInfo (){
-        const data = {name, gender, email, phoneNumber, pickUpAddress}
+        const data = {name, gender, email, phoneNumber, pickUpAddress};
         axios.put('/api/userAccount', data);
     }
     return(
@@ -74,46 +74,55 @@ export default function AccountPage() {
                     <div>
                         <WhiteBox>
                             <h2>Account Detail</h2>
+                            {!loaded && (
+                                <Spinner fullWidth={true}/>
 
-                            <Input
-                                type="text"
-                                placeholder={"Your full name"}
-                                value={name}
-                                name={"name"}
-                                onChange={ev => setName(ev.target.value)}
-                            />
+                            )}
 
-                            <Input
-                                type="text"
-                                placeholder={"Gender, as Male or Female"}
-                                value={gender}
-                                name={"gender"}
-                                onChange={ev => setGender(ev.target.value)}
-                            />
+                            {loaded && (
+                                <>
+                                    <Input
+                                        type="text"
+                                        placeholder={"Your full name"}
+                                        value={name}
+                                        name={"name"}
+                                        onChange={ev => setName(ev.target.value)}
+                                    />
 
-                            <Input
-                                type="text"
-                                placeholder={"Phone number"}
-                                value={phoneNumber}
-                                name={"phoneNumber"}
-                                onChange={ev => setPhoneNumber(ev.target.value)}
-                            />
-                            <Input
-                                type="text"
-                                placeholder={"Email"}
-                                value={email}
-                                name={"email"}
-                                onChange={ev => setEmail(ev.target.value)}
-                            />
-                            <AddressHolder>
-                                <Input type="text"
-                                       placeholder={" Pickup Address"}
-                                       value={pickUpAddress}
-                                       name={"pickUpAddress"}
-                                       onChange={ev => setPickUpAddress(ev.target.value)}/>
-                            </AddressHolder>
+                                    <Input
+                                        type="text"
+                                        placeholder={"Gender, as Male or Female"}
+                                        value={gender}
+                                        name={"gender"}
+                                        onChange={ev => setGender(ev.target.value)}
+                                    />
 
-                            <Button black block onClick={saveAccountInfo}>Save</Button>
+                                    <Input
+                                        type="text"
+                                        placeholder={"Phone number"}
+                                        value={phoneNumber}
+                                        name={"phoneNumber"}
+                                        onChange={ev => setPhoneNumber(ev.target.value)}
+                                    />
+                                    <Input
+                                        type="text"
+                                        placeholder={"Email"}
+                                        value={email}
+                                        name={"email"}
+                                        onChange={ev => setEmail(ev.target.value)}
+                                    />
+                                    <AddressHolder>
+                                        <Input type="text"
+                                               placeholder={" Pickup Address"}
+                                               value={pickUpAddress}
+                                               name={"pickUpAddress"}
+                                               onChange={ev => setPickUpAddress(ev.target.value)}/>
+                                    </AddressHolder>
+
+                                    <Button black block onClick={saveAccountInfo}>Save</Button>
+                                </>
+                            )}
+
                             <hr/>
                             {/*// If there was in a session, log out*/}
                             {session && (
