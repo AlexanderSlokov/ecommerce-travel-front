@@ -9,14 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^2.0.7",
     "@nodelib/fs.scandir": "^3.0.0",
     "axios": "^1.6.2",
     "eslint-plugin-react": "^7.33.2",
     "install": "^0.13.0",
     "lodash": "^4.17.21",
     "micro": "^10.0.1",
+    "mongodb": "^6.3.0",
     "mongoose": "^8.0.1",
     "next": "14.0.3",
+    "next-auth": "^4.24.5",
     "npm": "^10.2.4",
     "react": "^18",
     "react-dom": "^18",
