@@ -1,6 +1,7 @@
 import {model, models, Schema} from "mongoose";
 
 const BookingSchema = new Schema({
+    userEmail: String,
     line_items:Object,
     name:String,
     gender:String,

@@ -25,7 +25,7 @@ export default async function handler(req, res) {
             const bookingId = data.metadata.bookingId;
             const paid = data.payment_status === 'paid';
             if (bookingId && paid) {
-                await Booking.findByIdAndUpdate(bookingId, {paid: true,});
+                await Booking.findByIdAndUpdate(bookingId, {paid: true},  { new: true });
             }
 
             break;
