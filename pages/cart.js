@@ -7,6 +7,7 @@ import {CartContext} from "@/components/CartContext";
 import axios from "axios";
 import Table from "@/components/Table";
 import Input from "@/components/Input";
+import {useSession} from "next-auth/react";
 
 const ColumnsWrapper = styled.div`
   display: grid;
@@ -67,7 +68,7 @@ function numberWithCommas(price) {
 
 export default function CartPage() {
     const {cartProducts, addProduct, removeProduct, clearCart} = useContext(CartContext);
-
+    const {data:session} = useSession();
     const [products, setProducts] = useState([]);
     const [name, setName]  = useState('');
     const [gender, setGender] = useState('');
@@ -97,6 +98,20 @@ export default function CartPage() {
             clearCart();
         }
     }, []);
+
+
+    useEffect(() => {
+        if(!session) {
+            return
+        }
+        axios.get('/api/userAccount').then(r => {
+            setName(r.data?.name);
+            setGender(r.data?.gender);
+            setPhoneNumber(r.data?.phoneNumber);
+            setEmail(r.data?.email);
+            setPickUpAddress(r.data?.pickUpAddress);
+        });
+    }, [session]);
 
     function moreOfThisProduct(id) {
             addProduct(id);

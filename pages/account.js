@@ -16,12 +16,39 @@ const WishedProductsGrid = styled.div`
   gap: 20px;
 `;
 
+// const ColsWrapper = styled.div`
+//   display: grid;
+//   grid-template-columns: 1.2fr .8fr;
+//   gap: 40px;
+//   margin: 40px 0;
+//   p {
+//     margin: 10px;
+//   }
+// `;
+
 const ColsWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1.2fr .8fr;
+  //grid-template-columns: 1.2fr .8fr; /* Maintain the fractional relationship but add a minimum width */
+  grid-template-columns: minmax(min-content, 1.2fr) minmax(320px, .8fr);
   gap: 40px;
   margin: 40px 0;
+
+  > div:first-child {
+    min-width: 0; /* To respect the grid's size, needed for text overflow in grid */
+  }
+  
+  > div:last-child {
+    min-width: 320px; /* Set a minimum width for the account detail box */
+  }
+
+  @media screen and (min-width: 768px) { /* Adjust breakpoint as needed */
+    grid-template-columns: 1fr; /* Stack the columns on smaller screens */
+    > div:last-child {
+      min-width: 0; /* Allow the account detail box to adjust to the full width on smaller screens */
+    }
+  }
 `;
+
 
 const AddressHolder = styled.div`
   display: flex;
@@ -39,11 +66,17 @@ export default function AccountPage() {
     const [pickUpAddress, setPickUpAddress] = useState('');
 
     const [wishedProducts, setWishedProducts]=useState([]);
-    const [AccountInfoLoaded, setAccountInfoLoaded] = useState(false);
-    const [wishListLoaded, setWishListLoaded] = useState(false);
+    const [AccountInfoLoaded, setAccountInfoLoaded] = useState(true);
+    const [wishListLoaded, setWishListLoaded] = useState(true);
 
     //react hook to fill the information about logged-in user.
     useEffect(() => {
+        if (!session) {
+            return
+        }
+        setAccountInfoLoaded(false);
+        setWishListLoaded(false);
+
         axios.get('/api/userAccount').then(r => {
             setName(r.data?.name);
             setGender(r.data?.gender);
@@ -63,7 +96,7 @@ export default function AccountPage() {
             setWishListLoaded(true);
         });
 
-    }, []);
+    }, [session]);
 
     async function logout() {
         await signOut({callbackUrl:process.env.NEXT_PUBLIC_URL})
@@ -99,30 +132,39 @@ export default function AccountPage() {
                                 <Spinner fullWidth={true}/>
                             )}
                             {wishListLoaded && (
-                                <WishedProductsGrid>
-                                    { wishedProducts.length > 0 && wishedProducts.map(wp =>(
-                                        <ProductBox key={wp._id} {...wp} wished={true} onRemoveFromWishList={productRemovedFromWishlist}/>
-                                    ))}
+                                <>
+                                    <WishedProductsGrid>
+                                        { wishedProducts.length > 0 && wishedProducts.map(wp =>(
+                                            <ProductBox key={wp._id} {...wp} wished={true} onRemoveFromWishList={productRemovedFromWishlist}/>
+                                        ))}
+                                    </WishedProductsGrid>
 
                                     {wishedProducts.length === 0 && (
                                         <>
-                                        <p>Maybe we can hang out a bit and see what tour you will interested in, yes?</p>
+                                            {session && (
+                                                <p>Maybe we can hang out a bit and see what tour you will interested in, yes?</p>
+
+                                            )}
+
+                                            {!session && (
+                                                <p>Login first to use the features, my friend.</p>
+                                            )}
                                         </>
                                     )}
-                                </WishedProductsGrid>
+                                </>
+
                             )}
                         </WhiteBox>
                     </div>
 
                     <div>
                         <WhiteBox>
-                            <h2>Account Detail</h2>
+                            <h2>{session ? 'Account Detail' : 'Login'}</h2>
                             {!AccountInfoLoaded && (
                                 <Spinner fullWidth={true}/>
 
                             )}
-
-                            {AccountInfoLoaded && (
+                            {AccountInfoLoaded && session && (
                                 <>
                                     <Input
                                         type="text"
@@ -179,7 +221,7 @@ export default function AccountPage() {
                                 <Button
                                     primary
                                     onClick={login}
-                                >Logout</Button>
+                                >Login with Google</Button>
                             )}
 
                         </WhiteBox>

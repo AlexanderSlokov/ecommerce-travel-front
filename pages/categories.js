@@ -113,11 +113,12 @@ export async function getServerSideProps(ctx) {
     }
 
     // For the wishlist, as the same with other pages
-    const {user} = await getServerSession(ctx.req, ctx.res, authOptions);
-    const wishedProducts = await WishedProduct.find({
-        userEmail:user.email,
+    const session = await getServerSession(ctx.req, ctx.res, authOptions);
+    const wishedProducts = session?.user
+        ? await WishedProduct.find({
+        userEmail:session?.user.email,
         product: allFetchedProductsID,
-    })
+    }) : [];
 
     return{
         props: {
