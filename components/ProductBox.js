@@ -158,7 +158,7 @@ export default function ProductBox({_id, title,description,destination,
         <ProductWrapper>
             <WhiteBox href={url}>
                 <div>
-                    <WishlistButton wished={isWished} onClick={addToWishList}>
+                    <WishlistButton wished={isWished} onClick={ev => addToWishList(ev)}>
                         {isWished ? <HeartSolidIcon/> : <HeartOutlineIcon/>}
                     </WishlistButton>
 
