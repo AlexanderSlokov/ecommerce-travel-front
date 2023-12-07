@@ -8,7 +8,13 @@ import Input from "@/components/Input";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
+import ProductBox from "@/components/ProductBox";
 
+const WishedProductsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+`;
 
 const ColsWrapper = styled.div`
   display: grid;
@@ -32,8 +38,11 @@ export default function AccountPage() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [pickUpAddress, setPickUpAddress] = useState('');
 
-    const [loaded, setLoaded] = useState(false);
+    const [wishedProducts, setWishedProducts]=useState([]);
+    const [AccountInfoLoaded, setAccountInfoLoaded] = useState(false);
+    const [wishListLoaded, setWishListLoaded] = useState(false);
 
+    //react hook to fill the information about logged-in user.
     useEffect(() => {
         axios.get('/api/userAccount').then(r => {
             setName(r.data?.name);
@@ -41,8 +50,19 @@ export default function AccountPage() {
             setPhoneNumber(r.data?.phoneNumber);
             setEmail(r.data?.email);
             setPickUpAddress(r.data?.pickUpAddress);
-            setLoaded(true);
+            setAccountInfoLoaded(true);
         });
+
+        // also load wished product into wishlist section of account page
+        axios.get('/api/wishlist').then(r =>{
+            // console.log(r.data);
+            setWishedProducts(r.data.map(wp =>
+                wp.product
+            ));
+
+            setWishListLoaded(true);
+        });
+
     }, []);
 
     async function logout() {
@@ -67,19 +87,28 @@ export default function AccountPage() {
                     <div>
                         <WhiteBox>
                             <h2>Wishlist</h2>
-
+                            {!wishListLoaded && (
+                                <Spinner fullWidth={true}/>
+                            )}
+                            {wishListLoaded && (
+                                <WishedProductsGrid>
+                                    { wishedProducts.length > 0 && wishedProducts.map(wp =>(
+                                        <ProductBox {...wp} wished={true}/>
+                                    ))}
+                                </WishedProductsGrid>
+                            )}
                         </WhiteBox>
                     </div>
 
                     <div>
                         <WhiteBox>
                             <h2>Account Detail</h2>
-                            {!loaded && (
+                            {!AccountInfoLoaded && (
                                 <Spinner fullWidth={true}/>
 
                             )}
 
-                            {loaded && (
+                            {AccountInfoLoaded && (
                                 <>
                                     <Input
                                         type="text"
