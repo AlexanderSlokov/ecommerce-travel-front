@@ -91,6 +91,7 @@ export function numberWithCommas(price) {
 export default function ProductBox({_id, title,description,destination,
                                    price, startDate, endDate, capacity,
                                        images, category, properties,
+                                       onRemoveFromWishList = _id => {},
                                        wished = false}) {
 
     const url = '/product/' + _id;
@@ -107,16 +108,51 @@ export default function ProductBox({_id, title,description,destination,
     }
 
     function addToWishList(ev) {
-        // Stop the irrelevant event of navigating to the single product page
+        // Stop the irrelevant event of navigating to the single product page when click on the button
         ev.preventDefault();
         ev.stopPropagation();
         const nextValue = !isWished;
+        // If nextValue changed to false => user unlike the product => remove it.
+        if ( nextValue === false && onRemoveFromWishList) {
+            onRemoveFromWishList(_id);
+        }
         // call out the api
         axios.post('/api/wishlist', {
             product:_id,
         }).then(() => {});
         setIsWished(nextValue);
     }
+
+// Upgraded version of the addWishList function. Go along with the upgraded API endpoint.
+//     function addToWishList(ev) {
+//         ev.preventDefault();
+//         ev.stopPropagation();
+//         const nextValue = !isWished;
+//
+//         // If the user is trying to unlike the product
+//         if (!nextValue) {
+//             // Call out the API to remove the product from the wishlist
+//             axios.delete(`/api/wishlist/`).then(() => {
+//                 // Upon success, update the state to reflect the change
+//                 setIsWished(nextValue);
+//                 if (onRemoveFromWishList) {
+//                     onRemoveFromWishList(_id);
+//                 }
+//             }).catch((error) => {
+//                 // Handle the error scenario
+//                 console.error('Failed to remove product from wishlist', error);
+//             });
+//         } else {
+//             // If the user likes the product, add it to the wishlist
+//             axios.post('/api/wishlist', {
+//                 product: _id,
+//             }).then(() => {
+//                 setIsWished(nextValue);
+//             }).catch((error) => {
+//                 console.error('Failed to add product to wishlist', error);
+//             });
+//         }
+//     }
 
     return(
         <ProductWrapper>

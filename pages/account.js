@@ -79,6 +79,14 @@ export default function AccountPage() {
         const data = {name, gender, email, phoneNumber, pickUpAddress};
         axios.put('/api/userAccount', data);
     }
+
+    function productRemovedFromWishlist(idToRemove) {
+        setWishedProducts((products) => {
+            // Filter out the product that has the ID to remove
+            return products.filter((p) => p._id.toString() !== idToRemove);
+        });
+    }
+
     return(
         <>
         <Header/>
@@ -93,8 +101,14 @@ export default function AccountPage() {
                             {wishListLoaded && (
                                 <WishedProductsGrid>
                                     { wishedProducts.length > 0 && wishedProducts.map(wp =>(
-                                        <ProductBox {...wp} wished={true}/>
+                                        <ProductBox key={wp._id} {...wp} wished={true} onRemoveFromWishList={productRemovedFromWishlist}/>
                                     ))}
+
+                                    {wishedProducts.length === 0 && (
+                                        <>
+                                        <p>Maybe we can hang out a bit and see what tour you will interested in, yes?</p>
+                                        </>
+                                    )}
                                 </WishedProductsGrid>
                             )}
                         </WhiteBox>
