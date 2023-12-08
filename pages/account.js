@@ -79,7 +79,15 @@ export default function AccountPage() {
     //react hook to fill the information about logged-in user.
     useEffect(() => {
         if (!session) {
-            return
+            //Upgrade, Reset states when there is no session
+            setName('');
+            setGender('');
+            setPhoneNumber('');
+            setEmail('');
+            setPickUpAddress('');
+            setWishedProducts([]);
+            setOrders([]);
+            return;
         }
         setAccountInfoLoaded(false);
         setWishListLoaded(false);
@@ -97,10 +105,7 @@ export default function AccountPage() {
         // also load wished product into wishlist section of account page
         axios.get('/api/wishlist').then(r =>{
             // console.log(r.data);
-            setWishedProducts(r.data.map(wp =>
-                wp.product
-            ));
-
+            setWishedProducts(r.data.map(wp => wp.product));
             setWishListLoaded(true);
         });
 
@@ -112,6 +117,9 @@ export default function AccountPage() {
     }, [session]);
 
     async function logout() {
+        //Up, Reset states before logging out
+        setOrderLoaded(false);
+        setWishListLoaded(false);
         await signOut({callbackUrl:process.env.NEXT_PUBLIC_URL})
     }
 
@@ -144,56 +152,48 @@ export default function AccountPage() {
                                   active={activeTab}
                                   onChange={setActiveTab}
                             />
-                            {activeTab === 'Orders' && (
+                            {!session ? (
+                                // This message shows when there is no user session
+                                <p>Login first to use the features, my friend.</p>
+                            ) : (
+                                // This content shows when there is a user session
                                 <>
-                                    {!orderLoaded && (
-                                        <Spinner fullWidth={true}/>
-                                    )}
-                                    {orderLoaded && (
-                                        <div>
-                                            {orders.length === 0 && (
-                                                <>
-                                                    {session && (
-                                                        <p>Maybe we can buy something?</p>
-
-                                                    )}
-
-                                                    {!session && (
-                                                        <p>Login first to use the features, my friend.</p>
-                                                    )}
-                                                </>
-                                            )}
-                                            {orders.length > 0 && orders.map(o => (
-                                                    <SingleOrder {...o}/>
-                                                ))}
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                            {activeTab === 'Wishlist' && (
-                                <>
-                                    {!wishListLoaded && (
-                                        <Spinner fullWidth={true}/>
-                                    )}
-                                    {wishListLoaded && (
+                                    {activeTab === 'Orders' && (
                                         <>
-                                            <WishedProductsGrid>
-                                                { wishedProducts.length > 0 && wishedProducts.map(wp =>(
-                                                    <ProductBox key={wp._id} {...wp} wished={true} onRemoveFromWishList={productRemovedFromWishlist}/>
-                                                ))}
-                                            </WishedProductsGrid>
-
-                                            {wishedProducts.length === 0 && (
-                                                <>
-                                                    {session && (
-                                                        <p>Maybe we can hang out a bit and see what tour you will interested in, yes?</p>
-
-                                                    )}
-
-                                                    {!session && (
-                                                        <p>Login first to use the features, my friend.</p>
-                                                    )}
-                                                </>
+                                            {!orderLoaded ? (
+                                                // Show spinner while orders are loading
+                                                <Spinner fullWidth={true}/>
+                                            ) : orders.length === 0 ? (
+                                                // Show message if there are no orders
+                                                <p>Maybe we can buy something?</p>
+                                            ) : (
+                                                // Show orders if they exist
+                                                orders.map(order => (
+                                                    <SingleOrder key={order._id} {...order}/>
+                                                ))
+                                            )}
+                                        </>
+                                    )}
+                                    {activeTab === 'Wishlist' && (
+                                        <>
+                                            {!wishListLoaded ? (
+                                                // Show spinner while wishlist is loading
+                                                <Spinner fullWidth={true}/>
+                                            ) : wishedProducts.length === 0 ? (
+                                                // Show message if wishlist is empty
+                                                <p>Maybe we can hang out a bit and see what tour you will be interested in, yes?</p>
+                                            ) : (
+                                                // Show wished products if they exist
+                                                <WishedProductsGrid>
+                                                    {wishedProducts.map(product => (
+                                                        <ProductBox
+                                                            key={product._id}
+                                                            {...product}
+                                                            wished={true}
+                                                            onRemoveFromWishlist={productRemovedFromWishlist}
+                                                        />
+                                                    ))}
+                                                </WishedProductsGrid>
                                             )}
                                         </>
                                     )}
