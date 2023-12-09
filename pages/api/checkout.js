@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
 
     // Initialize an array to hold items for Stripe checkout
-    const line_items = [];
+    let line_items = [];
     for (const productId of uniqueIds) {
 
         // Find the product information for the current ID
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
                 price_data: {
                     currency: 'USD',
                     product_data: {name: productInfo.title},
-                    unit_amount: productInfo.price * 100, // Assuming productInfo.price is already an integer representing the price in VND
+                    unit_amount: quantity*productInfo.price * 100, // Assuming productInfo.price is already an integer representing the price in VND
                 },
                 quantity: quantity,
             });
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     // Create a Stripe checkout session with the line items and other details
     const StripeSession = await stripe.checkout.sessions.create({
         line_items,
-        mode:"payment",
+        mode:'payment',
         customer_email:email,
         success_url:process.env.PUBLIC_URL + '/cart?success=1',
         cancel_url:process.env.PUBLIC_URL + '/cart?canceled=1',
