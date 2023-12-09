@@ -41,14 +41,15 @@ const ColumnsWrapper = styled.div`
   
   div:nth-child(1){
     order: 2;
+      margin-left: auto;
+      margin-right: auto;
   }
   
     @media screen and (min-width: 768px) {
       grid-template-columns: 1.1fr .9fr;
-      div:nth-child(1){
-        order: 0;
-        align-items: center;
-      }
+        & > div:nth-child(1){
+            order: 0;
+        }
       img{
         max-width: 100%;
       }
@@ -67,6 +68,25 @@ const ButtonsWrapper = styled.div`
   margin-top: 25px;
 `;
 
+const CenterImg = styled.div`
+    display: flex;  
+    align-items: center;    
+    justify-content: center;
+`;
+
+const ImgColumn = styled.div`
+    & > div {
+        width: 100% ;
+    }
+`;
+
+const ContentWrapper = styled.div`
+    * {
+        text-align: center;
+    }
+`;
+
+
 export default function Featured({product}) {
     const {addProduct, checkForOverlappingTours} = useContext(CartContext);
 
@@ -84,13 +104,11 @@ export default function Featured({product}) {
             <CenterModifier>
                 <ColumnsWrapper>
                     <Column>
-                        <div>
+                        <ContentWrapper>
                             <h2>On the spotlight of this month:</h2>
                             <Title> {product.title}</Title>
 
-                            <Desc>
-                                {product.description}
-                            </Desc>
+                            <Desc>{product.description}</Desc>
 
                             <ButtonsWrapper>
                                 <ButtonLink href = {'/products/' + product._id} outline={1} white={1}>Find out more</ButtonLink>
@@ -100,13 +118,15 @@ export default function Featured({product}) {
                                 </Button>
                             </ButtonsWrapper>
 
-                        </div>
+                        </ContentWrapper>
                     </Column>
 
                     {/*This div is for image*/}
-                    <Column>
-                        <img src="https://images.toplist.vn/images/800px/dao-phu-quoc-761235.jpg" alt=""/>
-                    </Column>
+                    <ImgColumn>
+                        <CenterImg>
+                            <img src={product.images?.[0]} alt=""/>
+                        </CenterImg>
+                    </ImgColumn>
                 </ColumnsWrapper>
             </CenterModifier>
         </BackGround>

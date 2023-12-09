@@ -6,6 +6,7 @@ import NewProducts from "@/components/NewProducts";
 import {WishedProduct} from "@/models/WishedProduct";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/pages/api/auth/[...nextauth]";
+import {Setting} from "@/models/Setting";
 
 
 export default function HomePage({featuredProduct, newProducts, wishedNewProducts}) {
@@ -19,8 +20,12 @@ export default function HomePage({featuredProduct, newProducts, wishedNewProduct
 }
 
 export async function getServerSideProps(ctx) {
-    const featuredProductId = '655b31a10c4b2b252dedb308';
     await mongooseConnect();
+    const featuredProductSetting = await Setting.findOne({name:'featuredProductId'})
+    const featuredProductId = featuredProductSetting.value;
+
+    console.log(featuredProductId);
+
     const featuredProduct = await Product.findById(featuredProductId);
 
     // Find new products, descended order, only 10 products appear
