@@ -75,7 +75,7 @@ export default function CartPage() {
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [pickUpAddress, setPickUpAddress] = useState('');
-
+    const [serviceFee, setServiceFee] = useState(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
 
@@ -97,6 +97,9 @@ export default function CartPage() {
             setIsSuccess(true);
             clearCart();
         }
+        axios.get('/api/settings?name=serviceFee').then(r => {
+            setServiceFee(r.data.value);
+        })
     }, []);
 
 
@@ -136,7 +139,7 @@ export default function CartPage() {
     for (const productId of cartProducts) {
         // Find the product have that id, and take the price value, put it in the const
         const price  = products.find(p => p._id === productId)?.price || 0;
-            total += price;
+        total += price;
     }
 
     if (isSuccess) {
@@ -213,8 +216,13 @@ export default function CartPage() {
                            ))}
                            <tr>
                               <td></td>
-                               <td></td>
+                               <td colSpan={2}> Tour(s) price:</td>
                                <td>{numberWithCommas(total)} USD</td>
+                           </tr>
+
+                           <tr>
+                               <td colSpan={2}>Service Maintaining Fee: <br/> (We did not live by breathing air...)</td>
+                               <td>{(total*(serviceFee/100)).toFixed(2)} USD</td>
                            </tr>
                            </tbody>
                        </Table>
