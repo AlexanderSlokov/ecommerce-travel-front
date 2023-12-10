@@ -15,8 +15,24 @@ const ColumnsWrapper = styled.div`
   @media screen and (min-width: 768px) {
     grid-template-columns: 1.3fr .7fr;
   }
-  gap: 40px;
-  margin-top: 40px;
+    gap: 40px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    table thead tr th:nth-child(3),
+    table tbody tr td:nth-child(3),    
+    table tbody tr.subtotal td:nth-child(3){
+        text-align: right;
+        
+    }
+    table tr.subtotal td{
+        padding: 15px 0;
+    }
+    table tbody tr.subtotal td:nth-child(2){
+        font-size: 1.4rem;
+    }
+    tr.total td{
+        font-weight: bold;
+    }
 `;
 
 const Box = styled.div`
@@ -124,6 +140,16 @@ export default function CartPage() {
         removeProduct(id);
     }
 
+    function feeCalc(total, fee){
+        // Return the service fee as a number, not as a fixed string.
+        return (total * (fee / 100)).toFixed(2);
+    }
+
+    function totalSum(total, fee){
+        // Make sure both total and fee are numbers and add them.
+        return parseFloat(total) + parseFloat(fee);
+    }
+
     async function goToPayment() {
         const response = await axios.post('/api/checkout', {
             name, gender, email, phoneNumber, pickUpAddress, cartProducts
@@ -134,13 +160,15 @@ export default function CartPage() {
         }
     }
 
-    // Calculating total price of tours inside the cart.
+    // Calculating the total price of tours inside the cart.
     let total = 0;
     for (const productId of cartProducts) {
         // Find the product have that id, and take the price value, put it in the const
         const price  = products.find(p => p._id === productId)?.price || 0;
         total += price;
     }
+
+
 
     if (isSuccess) {
         return (
@@ -184,51 +212,74 @@ export default function CartPage() {
 
                            <tbody>
                            {products.map(product => (
-                                   <tr>
-                                       <ProductInfoCell>
-                                           <ProductImageBox>
-                                               <img src={product.images[0]} alt=""/>
-                                           </ProductImageBox>
-                                           {product.title}
+                               <tr>
+                                   <ProductInfoCell>
+                                       <ProductImageBox>
+                                           <img src={product.images[0]} alt=""/>
+                                       </ProductImageBox>
+                                       {product.title}
 
-                                           <div>From: {
-                                               new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
-                                                   .format(new Date(product.startDate))
-                                           } to {
-                                               new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
-                                                   .format(new Date(product.endDate))
-                                           }</div>
-                                       </ProductInfoCell>
+                                       <div>From: {
+                                           new Intl.DateTimeFormat('en-GB', {
+                                               day: '2-digit',
+                                               month: '2-digit',
+                                               year: '2-digit'
+                                           })
+                                               .format(new Date(product.startDate))
+                                       } to {
+                                           new Intl.DateTimeFormat('en-GB', {
+                                               day: '2-digit',
+                                               month: '2-digit',
+                                               year: '2-digit'
+                                           })
+                                               .format(new Date(product.endDate))
+                                       }</div>
+                                   </ProductInfoCell>
 
-                                       <td align={"center"}>
-                                           <Button
-                                               onClick={() => moreOfThisProduct(product._id)
+                                   <td align={"center"}>
+                                       <Button
+                                           onClick={() => moreOfThisProduct(product._id)
                                            }>+</Button>
-                                           <QuantityLabel>
-                                               {cartProducts.filter(id => id === product._id).length}
-                                           </QuantityLabel>
-                                           <Button
+                                       <QuantityLabel>
+                                           {cartProducts.filter(id => id === product._id).length}
+                                       </QuantityLabel>
+                                       <Button
                                            onClick={() => lessOfThisProduct(product._id)}
-                                           >-</Button>
-                                       </td>
-                                       <td>{numberWithCommas(cartProducts.filter(id => id === product._id).length * product.price)} USD</td>
-                                   </tr>
+                                       >-</Button>
+                                   </td>
+                                   <td>{numberWithCommas(cartProducts.filter(id => id === product._id).length * product.price)} USD</td>
+                               </tr>
                            ))}
-                           <tr>
-                              <td></td>
+                           <tr className={"subtotal"}>
                                <td colSpan={2}> Tour(s) price:</td>
                                <td>{numberWithCommas(total)} USD</td>
                            </tr>
 
-                           <tr>
-                               <td colSpan={2}>Service Maintaining Fee: <br/> (We did not live by breathing air...)</td>
-                               <td>{(total*(serviceFee/100)).toFixed(2)} USD</td>
+                           <tr className={"subtotal"}>
+                               <td colSpan={2}>Service Maintaining Fee: <br/> <br/>
+                                   ( {serviceFee}% of the booking price.<br/> <br/>
+                                   This fee contributes to: <br/>
+                                   * Employee salary payments. <br/>
+                                   * Web server maintenance.<br/>
+                                   * Transaction fees for using Stripe's payment platform.<br/>
+                                   * Services enhancing your experience, such as tour arrangements and guide fees.<br/>
+                                   <br/>
+                                   (Note: This fee is essential for providing high-quality services and is not merely for profit.)<br/>
+
+                               </td>
+                               <td>{feeCalc(total, serviceFee)} USD</td>
+                           </tr>
+
+                           <tr className={"total"}>
+                               <td colSpan={2}> Total:</td>
+                               <td>{numberWithCommas(totalSum(total, feeCalc(total, serviceFee)).toFixed(2))} USD</td>
                            </tr>
                            </tbody>
                        </Table>
                        )}
 
-                       <h4>Disclaimer: Please pay attention to spend enough break time to move between locations. Although we can provide free postponement.</h4>
+                       <h4>Disclaimer: Please pay attention to spend enough break time to move between locations.
+                           Although we can provide free postponement.</h4>
                    </Box>
 
                    {!!cartProducts?.length && (

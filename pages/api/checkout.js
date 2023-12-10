@@ -3,6 +3,7 @@ import {Product} from "@/models/Product";
 import {Booking} from "@/models/Booking";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/pages/api/auth/[...nextauth]";
+import axios from "axios";
 
 const stripe = require('stripe')(process.env.STRIPE_SK);
 
@@ -62,6 +63,28 @@ export default async function handler(req, res) {
         userEmail: session?.user?.email,
     });
 
+    // Fetch the service fee percentage from the admin settings
+    let serviceFeePercentage;
+    try {
+        const settingsResponse = await axios.get('http://localhost:4000/api/settings?name=serviceFee');
+        serviceFeePercentage = settingsResponse.data.value;
+    } catch (error) {
+        console.error('Error fetching service fee:', error);
+        res.status(500).json({ error: 'Error fetching service fee' });
+        return;
+    }
+
+    let totalAmount = 0;
+
+    // Calculate the total amount from line_items
+    for (const line_item of line_items) {
+        totalAmount += line_item.price_data.unit_amount;
+    }
+
+    // Calculate the service fee in cents as a fixed amount
+    const serviceFee = Math.round(totalAmount * serviceFeePercentage / 100);
+    const displayName = `Service Maintaining Fee (Charged ${serviceFeePercentage}%, this term is mentioned in cart section.)`;
+
     // Create a Stripe checkout session with the line items and other details
     const StripeSession = await stripe.checkout.sessions.create({
         line_items,
@@ -70,6 +93,15 @@ export default async function handler(req, res) {
         success_url:process.env.PUBLIC_URL + '/cart?success=1',
         cancel_url:process.env.PUBLIC_URL + '/cart?canceled=1',
         metadata:{bookingId:bookingDoc._id.toString(), test:'ok'},
+        shipping_options:[
+            {
+                shipping_rate_data:{
+                    display_name:displayName,
+                    type:"fixed_amount",
+                    fixed_amount:{amount: serviceFee,currency:'USD'}
+                }
+            }
+        ]
     });
 
     res.json({
