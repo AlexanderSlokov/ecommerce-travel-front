@@ -11,6 +11,7 @@ import CartIcon from "@/components/icons/Cart";
 import {useContext} from "react";
 import {CartContext} from "@/components/CartContext";
 import {numberWithCommas} from "@/components/ProductBox";
+import ProductReviews from "@/components/ProductReviews";
 
 const ColWrapper = styled.div`
   display: grid;
@@ -81,7 +82,7 @@ export default function SingleProductPage({product}) {
                         </PriceRow>
                     </div>
                 </ColWrapper>
-
+                <ProductReviews product={product}/>
             </CenterModifier>
         </>
     );

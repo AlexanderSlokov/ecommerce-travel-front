@@ -3,7 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_SK);
 import {buffer} from 'micro';
 import {Booking} from "@/models/Booking";
 
-//
+
 // IMPORTANT: YOU NEED TO TRIGGER THE API WEBHOOK FIRST IF YOU WANT TO TEST WITH BOOKING SECTION:
 // 1. stripe login
 // 2. stripe listen --forward-to localhost:4000/api/webhook

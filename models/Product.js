@@ -12,9 +12,8 @@ const ProductSchema = new Schema({
     images: [{type:String}],
     category: {type:mongoose.Types.ObjectId, ref:'Category'},
     properties: {type:Object},
-    rating: { type: Number, default: 0 },
-    reviews: [{ type: mongoose.Types.ObjectId, ref: 'Review' }],
-    status: { type: String, enum: ['available', 'fully booked', 'unavailable'], default: 'available' },
+    // reviews: [{ type: mongoose.Types.ObjectId, ref: 'Review' }],
+    // status: { type: String, enum: ['available', 'fully booked', 'unavailable'], default: 'available' },
 
 }, {
     timestamps: true,
