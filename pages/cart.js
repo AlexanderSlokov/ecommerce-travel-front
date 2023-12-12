@@ -257,7 +257,7 @@ export default function CartPage() {
 
                            <tr className={"subtotal"}>
                                <td colSpan={2}>Service Maintaining Fee: <br/> <br/>
-                                   ( {serviceFee}% of the booking price.<br/> <br/>
+                                   {serviceFee}% of the booking price.<br/> <br/>
                                    This fee contributes to: <br/>
                                    * Employee salary payments. <br/>
                                    * Web server maintenance.<br/>
@@ -278,8 +278,15 @@ export default function CartPage() {
                        </Table>
                        )}
 
-                       <h4>Disclaimer: Please pay attention to spend enough break time to move between locations.
-                           Although we can provide free postponement.</h4>
+                       <h4>Disclaimer: <br/>
+                           1. Please pay attention to spend enough break time to move between your tours' locations. <br/>
+                           <br/>
+                           2. "Children" term here is understood as equal or younger than 7 years old. <br/>
+                           <br/>
+                           3. Your children will be served as full quality without payment. <br/>
+                           <br/>
+                           4. Only adults and above 7 years old are charged fees.
+                       </h4>
                    </Box>
 
                    {!!cartProducts?.length && (
