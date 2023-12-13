@@ -8,8 +8,9 @@ export const CartContext = createContext({});
 export function CartContextProvider({children}) {
 
     const ls = typeof window !== "undefined" ? window.localStorage:null;
-    const[cartProducts, setCartProducts] = useState([]);
+    const [cartProducts, setCartProducts] = useState([]);
     const [products, setProducts] = useState([]); // Ensure this is populated with the product data
+    const [childrenAges, setChildrenAges] = useState([]);
 
     // Stop cart to lost counting when reload the pages or directing
     useEffect(() => {
@@ -70,9 +71,15 @@ export function CartContextProvider({children}) {
     }
 
     // Count how many products added
-    function addProduct(productId) {
+    async function addProduct(productId) {
         // Add product to cart if there are no overlaps
         setCartProducts(prev => [...prev, productId]);
+        await Swal.fire({
+            title: 'Success!',
+            text: 'Tour added.',
+            icon: 'success',
+            confirmButtonText: 'Okay'
+        });
     }
 
     function removeProduct(productId) {
@@ -90,9 +97,33 @@ export function CartContextProvider({children}) {
         setCartProducts([]);
     }
 
+    // Function to add a child's age to the context
+    const addChildAge = (age) => {
+        setChildrenAges((prevAges) => [...prevAges, age]);
+    };
+
+    // Function to remove a child's age from the context
+    const removeChildAge = (index) => {
+        setChildrenAges((prevAges) => prevAges.filter((_, i) => i !== index));
+    };
+
+    const calculateChildrenPrice = (ages, adultPrice, discountRate) => {
+        return ages.reduce((acc, age) => {
+            return acc + (age <= 10 ? adultPrice * discountRate : adultPrice);
+        }, 0);
+    };
+
     return (
-        <CartContext.Provider value={{cartProducts, setCartProducts, checkForOverlappingTours,clearCart,
-            addProduct, removeProduct}}>
+        <CartContext.Provider value={{cartProducts,
+            setCartProducts,
+            checkForOverlappingTours,
+            clearCart,
+            addProduct,
+            addChildAge,
+            removeChildAge,
+            calculateChildrenPrice,
+            removeProduct}}>
+
             {children}
         </CartContext.Provider>
     );
