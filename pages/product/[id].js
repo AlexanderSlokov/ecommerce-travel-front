@@ -72,11 +72,11 @@ export default function SingleProductPage({product}) {
         <>
             <Header />
             <CenterModifier>
+
                 <ColWrapper>
                     <WhiteBox>
                         <ProductImages images={product.images} />
                     </WhiteBox>
-
                     <div>
 
                         <div>
@@ -85,7 +85,11 @@ export default function SingleProductPage({product}) {
                             <div>
                                 {renderProductProperties(product.properties)}
                             </div>
-                            <p> <strong>Description:</strong>  {product.description}</p>
+
+                            <WhiteBox>
+                                <p><strong>Description:</strong></p>
+                                <div style={{whiteSpace: 'pre-wrap'}}>{product.description}</div>
+                            </WhiteBox>
                         </div>
 
                         <div> From: {
