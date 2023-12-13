@@ -90,13 +90,15 @@ const ContentWrapper = styled.div`
 export default function Featured({product}) {
     const {addProduct, checkForOverlappingTours} = useContext(CartContext);
 
-    const moreOfThisProduct = (newProductId) => {
-        // Call checkForOverlappingTours here and handle the logic based on its return value
-        if (checkForOverlappingTours(newProductId)) {
-            alert('This tour overlaps with another in your cart!');
-        } else {
-            addProduct(newProductId); // Add product to cart if no overlap
+    async function moreOfThisProduct(newProductId) {
+        // Await the result from checkForOverlappingTours
+        const isOverlapping = await checkForOverlappingTours(newProductId);
+
+        if (!isOverlapping) {
+            // Add product to cart if no overlap
+            addProduct(newProductId);
         }
+        // If there is an overlap, checkForOverlappingTours will handle showing the alert.
     }
 
     return(

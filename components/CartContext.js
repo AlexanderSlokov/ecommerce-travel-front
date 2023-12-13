@@ -1,5 +1,7 @@
 import {createContext, useEffect, useState} from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 
 export const CartContext = createContext({});
 
@@ -7,7 +9,7 @@ export function CartContextProvider({children}) {
 
     const ls = typeof window !== "undefined" ? window.localStorage:null;
     const[cartProducts, setCartProducts] = useState([]);
-    const [products, setProducts] = useState([]); // Ensure this is populated with the products data
+    const [products, setProducts] = useState([]); // Ensure this is populated with the product data
 
     // Stop cart to lost counting when reload the pages or directing
     useEffect(() => {
@@ -33,7 +35,7 @@ export function CartContextProvider({children}) {
             });
     }, []); // Empty dependency array means this runs once on mount
 
-    function checkForOverlappingTours(newProductId) {
+    async function checkForOverlappingTours(newProductId) {
         if (!products) {
             console.error('Products data is not loaded yet.');
             return false; // Or you might want to handle this case differently
@@ -54,7 +56,14 @@ export function CartContextProvider({children}) {
             const existingProductEndDate = new Date(existingProduct.endDate);
 
             if (newProductStartDate <= existingProductEndDate && newProductEndDate >= existingProductStartDate) {
+                await Swal.fire({
+                    title: 'Oops!',
+                    text: 'This tour overlaps with another tour in your cart.',
+                    icon: 'error',
+                    confirmButtonText: 'Okay'
+                });
                 return true; // There is an overlap
+
             }
         }
         return false; // No overlaps

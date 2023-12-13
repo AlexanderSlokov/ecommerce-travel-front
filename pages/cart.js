@@ -8,6 +8,7 @@ import axios from "axios";
 import Table from "@/components/Table";
 import Input from "@/components/Input";
 import {useSession} from "next-auth/react";
+import Swal from "sweetalert2";
 
 const ColumnsWrapper = styled.div`
   display: grid;
@@ -151,6 +152,18 @@ export default function CartPage() {
     }
 
     async function goToPayment() {
+        // Check for missing information
+        if (!name || !gender || !email || !phoneNumber || !pickUpAddress) {
+            await Swal.fire({
+                title: 'Missing Information',
+                text: 'Please fill out all fields before proceeding to payment.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Do not proceed further if information is missing
+        }
+
+        // If all information is present, proceed with the existing logic
         const response = await axios.post('/api/checkout', {
             name, gender, email, phoneNumber, pickUpAddress, cartProducts
         });
@@ -281,11 +294,9 @@ export default function CartPage() {
                        <h4>Disclaimer: <br/>
                            1. Please pay attention to spend enough break time to move between your tours' locations. <br/>
                            <br/>
-                           2. "Children" term here is understood as equal or younger than 7 years old. <br/>
+                           2. "Children" term here is understood as equal or younger than 10 years old. <br/>
                            <br/>
-                           3. Your children will be served as full quality without payment. <br/>
-                           <br/>
-                           4. Only adults and above 7 years old are charged fees.
+                           3. Your children will be served as full quality without payment. Only adults and children above 10 years old are charged full price.
                        </h4>
                    </Box>
 
