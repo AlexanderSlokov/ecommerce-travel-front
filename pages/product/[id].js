@@ -85,7 +85,7 @@ export default function SingleProductPage({product}) {
                             <div>
                                 {renderProductProperties(product.properties)}
                             </div>
-                            <p>Description: {product.description}</p>
+                            <p> <strong>Description:</strong>  {product.description}</p>
                         </div>
 
                         <div> From: {
