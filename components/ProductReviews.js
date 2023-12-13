@@ -26,7 +26,7 @@ const ColsWrapper = styled.div`
     
     @media screen and (min-width: 768px) {
         grid-template-columns: 1fr 1fr;
-        gap: 40px;
+        gap: 60px;
     }
 `;
 
@@ -81,6 +81,11 @@ export default function ProductReviews({product}) {
         })
     }
 
+    const AddReviewBox = styled(WhiteBox)`
+    padding: 20px; // Add padding inside the box for more space
+    // Other styles...
+`;
+
     useEffect(() => {
         loadReviews();
     }, []);
@@ -90,7 +95,7 @@ export default function ProductReviews({product}) {
             <Title>Reviews</Title>
             <ColsWrapper>
                 <div>
-                    <WhiteBox>
+                    <AddReviewBox>
                         <Subtitle>Add a review</Subtitle>
                         <div>
                             <StarRating onChange={setStars}/>
@@ -99,42 +104,46 @@ export default function ProductReviews({product}) {
                             value={title}
                             onChange={ev => setTitle(ev.target.value)}
                             placeholder={"Title"}/>
+                        <br/>
+                        You can pull the review box as big as you want:
                         <TextArea
-                            value = {desc}
-                            onChange = {ev => setDesc(ev.target.value)}
+                            value={desc}
+                            onChange={ev => setDesc(ev.target.value)}
                             placeholder={"Was your experience good?"}/>
                         <div>
                             <Button primary
                                     onClick={submitReview}
                             >Submit your review</Button>
                         </div>
-                    </WhiteBox>
+                    </AddReviewBox>
+
+                    <div>
+                        <WhiteBox>
+                            <Subtitle>All reviews</Subtitle>
+                            {reviewsLoading && (
+                                <Spinner fullWidth={true}/>
+                            )}
+
+                            {reviews.length === 0 && (
+                                <p>Nothing...</p>
+                            )}
+
+                            {reviews.length > 0 && reviews.map(r => (
+                                <ReviewWrapper>
+                                    <ReviewHeader>
+                                        <StarRating size={'sm'} disabled={true} defaultHowMany={r.stars}/>
+                                        <time>Date: {(new Date(r.createdAt)).toLocaleString('sv-SE')}</time>
+                                    </ReviewHeader>
+                                    <h3>Title: {r.title}</h3> <br/>
+                                    <p>{r.desc}</p>  <br/>
+                                    <br/>
+                                </ReviewWrapper>
+                            ))}
+                        </WhiteBox>
+                    </div>
+
                 </div>
 
-                <div>
-                    <WhiteBox>
-                        <Subtitle>All reviews</Subtitle>
-                        {reviewsLoading && (
-                            <Spinner fullWidth={true}/>
-                        )}
-
-                        {reviews.length === 0 && (
-                            <p>Nothing...</p>
-                        )}
-
-                        {reviews.length > 0 && reviews.map(r => (
-                            <ReviewWrapper>
-                                <ReviewHeader>
-                                    <StarRating size={'sm'} disabled={true} defaultHowMany={r.stars}/>
-                                    <time>Date: {(new Date(r.createdAt)).toLocaleString('sv-SE')}</time>
-                                </ReviewHeader>
-                                <h3>Title: {r.title}</h3> <br/>
-                                <p>{r.desc}</p>  <br/>
-                                <br/>
-                            </ReviewWrapper>
-                        ))}
-                    </WhiteBox>
-                </div>
 
             </ColsWrapper>
         </div>

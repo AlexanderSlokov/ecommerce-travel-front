@@ -14,26 +14,26 @@ import {numberWithCommas} from "@/components/ProductBox";
 import ProductReviews from "@/components/ProductReviews";
 
 const ColWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  @media screen and (min-width: 768px) {
-    grid-template-columns: .8fr 1.2fr;
-  }
-  gap: 40px;
-  margin: 40px 0;
-  
+    display: grid;
+    grid-template-columns: 1fr;
+    @media screen and (min-width: 768px) {
+        grid-template-columns: .8fr 1.2fr; /* Or adjust the ratio as needed */
+    }
+    gap: 10px; /* Adjust the gap if more space is needed */
+    margin: 10px 0 10px;
+
 `;
 
 const PriceRow = styled.div`
-  gap: 20px;
-  display: flex;
-  align-items: center;
-  margin-top: 40px;
-  
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+
 `;
 
 const Price = styled.span`
-font-size: 1.4rem;
+    font-size: 1.4rem;
 `;
 
 
@@ -70,28 +70,13 @@ export default function SingleProductPage({product}) {
 
     return (
         <>
-            <Header />
+            <Header/>
             <CenterModifier>
-
+                <WhiteBox>
+                    <ProductImages images={product.images}/>
+                </WhiteBox>
                 <ColWrapper>
                     <WhiteBox>
-                        <ProductImages images={product.images} />
-                    </WhiteBox>
-                    <div>
-
-                        <div>
-                            <Title>{product.title}</Title>
-                            {/* Dynamically display product properties */}
-                            <div>
-                                {renderProductProperties(product.properties)}
-                            </div>
-
-                            <WhiteBox>
-                                <p><strong>Description:</strong></p>
-                                <div style={{whiteSpace: 'pre-wrap'}}>{product.description}</div>
-                            </WhiteBox>
-                        </div>
-
                         <div> From: {
                             new Intl.DateTimeFormat('en-GB', {day: '2-digit', month: '2-digit', year: '2-digit'})
                                 .format(new Date(product.startDate))
@@ -110,9 +95,30 @@ export default function SingleProductPage({product}) {
                                 </Button>
                             </div>
                         </PriceRow>
+
+                        <WhiteBox className="ReviewsBox">
+                            <ProductReviews product={product}/>
+                        </WhiteBox>
+
+                    </WhiteBox>
+                    <div>
+
+                        <WhiteBox>
+                            <Title>{product.title}</Title>
+                            {/* Dynamically display product properties */}
+                            <div>
+                                {renderProductProperties(product.properties)}
+                            </div>
+                        </WhiteBox>
+
+
+                        <WhiteBox>
+                            <p><strong>Description:</strong></p>
+                            <div style={{whiteSpace: 'pre-wrap'}}>{product.description}</div>
+                        </WhiteBox>
+
                     </div>
                 </ColWrapper>
-                <ProductReviews product={product}/>
             </CenterModifier>
         </>
     );
