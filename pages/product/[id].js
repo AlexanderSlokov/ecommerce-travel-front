@@ -36,48 +36,74 @@ const Price = styled.span`
 font-size: 1.4rem;
 `;
 
+
 export default function SingleProductPage({product}) {
     const {addProduct, checkForOverlappingTours} = useContext(CartContext);
 
-    const moreOfThisProduct = (newProductId) => {
-        // Call checkForOverlappingTours here and handle the logic based on its return value
-        if (checkForOverlappingTours(newProductId)) {
-            alert('This tour overlaps with another in your cart!');
-        } else {
-            addProduct(newProductId); // Add product to cart if no overlap
+    async function moreOfThisProduct(newProductId) {
+        // Await the result from checkForOverlappingTours
+        const isOverlapping = await checkForOverlappingTours(newProductId);
+
+        if (!isOverlapping) {
+            // Add product to cart if no overlap
+            addProduct(newProductId);
         }
+        // If there is an overlap, checkForOverlappingTours will handle showing the alert.
     }
 
-    return(
+    const renderProductProperties = (properties) => {
+        // Convert the properties' object into an array of key-value pairs
+        const entries = Object.entries(properties || {});
+        // Generate JSX for each property
+        return entries.map(([key, value], index) => {
+            // If the value is truthy or a number (to allow zeros), render the property
+            if (value || typeof value === 'number') {
+                return (
+                    <div key={index}>
+                        <strong>{key.replace(/_/g, ' ')}:</strong> {value.toString()}
+                    </div>
+                );
+            }
+            return null; // Otherwise, don't render anything
+        });
+    };
+
+    return (
         <>
-            <Header/>
+            <Header />
             <CenterModifier>
                 <ColWrapper>
                     <WhiteBox>
-                        <ProductImages images={product.images}/>
+                        <ProductImages images={product.images} />
                     </WhiteBox>
 
                     <div>
-                        <Title>{product.title}</Title>
-                        <p> Description: {product.description}</p>
+
+                        <div>
+                            <Title>{product.title}</Title>
+                            {/* Dynamically display product properties */}
+                            <div>
+                                {renderProductProperties(product.properties)}
+                            </div>
+                            <p>Description: {product.description}</p>
+                        </div>
 
                         <div> From: {
-                            new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                            new Intl.DateTimeFormat('en-GB', {day: '2-digit', month: '2-digit', year: '2-digit'})
                                 .format(new Date(product.startDate))
                         } to {
-                            new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                            new Intl.DateTimeFormat('en-GB', {day: '2-digit', month: '2-digit', year: '2-digit'})
                                 .format(new Date(product.endDate))
                         }</div>
 
                         <PriceRow>
                             <div>
                                 <Price> {numberWithCommas(product.price)} USD (per a slot)</Price>
-
                             </div>
                             <div>
-                                <Button primary onClick={() => moreOfThisProduct(product._id)}
-
-                                ><CartIcon/> Add a slot for this tour</Button>
+                                <Button primary onClick={() => moreOfThisProduct(product._id)}>
+                                    <CartIcon/> Add a slot for this tour
+                                </Button>
                             </div>
                         </PriceRow>
                     </div>
@@ -89,8 +115,6 @@ export default function SingleProductPage({product}) {
 }
 
 export async function getServerSideProps(context) {
-    // console.log({query:context.query});
-    // { query: { id: '655b31a10c4b2b252dedb308' } }
     await mongooseConnect();
     const {id} = context.query;
     const product = await Product.findById(id);
