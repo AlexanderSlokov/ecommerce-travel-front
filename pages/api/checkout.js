@@ -48,7 +48,7 @@ export default async function handler(req, res) {
                 price_data: {
                     currency: 'USD',
                     product_data: {name: productInfo.title},
-                    unit_amount: quantity*productInfo.price * 100, // Assuming productInfo.price is already an integer representing the price in VND
+                    unit_amount: productInfo.price * 100, // Assuming productInfo.price is already an integer representing the price in VND
                 },
                 quantity: quantity,
             });
