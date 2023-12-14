@@ -18,16 +18,6 @@ const WishedProductsGrid = styled.div`
   gap: 20px;
 `;
 
-// const ColsWrapper = styled.div`
-//   display: grid;
-//   grid-template-columns: 1.2fr .8fr;
-//   gap: 40px;
-//   margin: 40px 0;
-//   p {
-//     margin: 10px;
-//   }
-// `;
-
 const ColsWrapper = styled.div`
   display: grid;
   //grid-template-columns: 1.2fr .8fr; /* Maintain the fractional relationship but add a minimum width */

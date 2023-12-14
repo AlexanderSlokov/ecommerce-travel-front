@@ -1,19 +1,31 @@
-import {BounceLoader} from "react-spinners";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
-${props => props.fullWidth ? `
- display: flex;
- justify-content: center;
-` : `
-   border: 5px solid blue;
-`};
+    display: flex;
+    justify-content: center; // Centers the spinner horizontally
+    align-items: center; // Centers the spinner vertically
+    height: 100vh; // Makes the Wrapper take up the full viewport height
+    // Add any additional styling you want for the wrapper
 `;
-export default function Spinner({fullWidth}) {
+
+const StyledGif = styled.img`
+    width: 300px;
+    height: auto;
+    animation: fadeInOut 5s; // Adjust the time as needed
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+`;
+
+export default function Spinner({ fullWidth }) {
     return (
         <Wrapper fullWidth={fullWidth}>
-            <BounceLoader speedMultiplier={3} color={'#555'}/>
+            <StyledGif src="/herta-honkai-star-rail.gif" alt="Loading..." />
         </Wrapper>
-
     );
 }

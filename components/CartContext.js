@@ -10,7 +10,7 @@ export function CartContextProvider({children}) {
     const ls = typeof window !== "undefined" ? window.localStorage:null;
     const [cartProducts, setCartProducts] = useState([]);
     const [products, setProducts] = useState([]); // Ensure this is populated with the product data
-    const [childrenAges, setChildrenAges] = useState([]);
+
 
     // Stop cart to lost counting when reload the pages or directing
     useEffect(() => {
@@ -59,7 +59,7 @@ export function CartContextProvider({children}) {
             if (newProductStartDate <= existingProductEndDate && newProductEndDate >= existingProductStartDate) {
                 await Swal.fire({
                     title: 'Oops!',
-                    text: 'This tour overlaps with another tour in your cart.',
+                    text: 'This tour overlaps with another tour in your booking plan.',
                     icon: 'error',
                     confirmButtonText: 'Okay'
                 });
@@ -73,7 +73,7 @@ export function CartContextProvider({children}) {
                 Math.abs(existingProductStartDate - newProductEndDate) < minGap) {
                 await Swal.fire({
                     title: 'Warning!',
-                    text: 'This tour is scheduled too close to another tour in your cart. Please allow at least a 2-day gap between tours.',
+                    text: 'This tour is scheduled too close to another tour in your plan. Please allow at least a 2-day gap between tours.',
                     icon: 'warning',
                     confirmButtonText: 'Okay'
                 });
@@ -87,9 +87,10 @@ export function CartContextProvider({children}) {
     async function addProduct(productId) {
         // Add product to cart if there are no overlaps
         setCartProducts(prev => [...prev, productId]);
+
         await Swal.fire({
             title: 'Success!',
-            text: 'Tour added.',
+            text: 'Slot added.',
             icon: 'success',
             confirmButtonText: 'Okay'
         });
@@ -111,20 +112,6 @@ export function CartContextProvider({children}) {
     }
 
     // Function to add a child's age to the context
-    const addChildAge = (age) => {
-        setChildrenAges((prevAges) => [...prevAges, age]);
-    };
-
-    // Function to remove a child's age from the context
-    const removeChildAge = (index) => {
-        setChildrenAges((prevAges) => prevAges.filter((_, i) => i !== index));
-    };
-
-    const calculateChildrenPrice = (ages, adultPrice, discountRate) => {
-        return ages.reduce((acc, age) => {
-            return acc + (age <= 10 ? adultPrice * discountRate : adultPrice);
-        }, 0);
-    };
 
     return (
         <CartContext.Provider value={{cartProducts,
@@ -132,9 +119,6 @@ export function CartContextProvider({children}) {
             checkForOverlappingTours,
             clearCart,
             addProduct,
-            addChildAge,
-            removeChildAge,
-            calculateChildrenPrice,
             removeProduct}}>
 
             {children}

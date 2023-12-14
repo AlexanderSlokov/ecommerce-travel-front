@@ -10,15 +10,6 @@ const BookingSchema = new Schema({
     pickUpAddress:String,
     paid:Boolean,
 
-    childrenCount: {
-        type: Number,
-        required: [true, 'Please specify the number of children.'],
-        min: [0, 'Number of children cannot be negative.']
-    },
-    childrenAges: {
-        type: [Number], // Array of numbers to store the ages of each child
-    },
-
 }, {
     timestamps: true,
 });
