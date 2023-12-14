@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
 const WhiteBox = styled.div`
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 30px;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
     margin-bottom: 10px;
 
     /* Add to your WhiteBox or create a new styled component for Reviews */

@@ -79,6 +79,13 @@ const AddressHolder = styled.div`
   display: flex;
 `;
 
+const ParticipantTH = styled.th`
+    padding-left: 60px;
+    @media screen and (max-width: 768px) {
+        padding-right: 60px;
+    }
+`;
+
 function numberWithCommas(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -218,7 +225,7 @@ export default function CartPage() {
                            <thead>
                                <tr>
                                    <th>Tour</th>
-                                   <th width={'100%'} align={"center"}>Participants</th>
+                                   <ParticipantTH width={'100%'} align={"center"} className={"ps-80"}>Participants</ParticipantTH>
                                    <th>Price</th>
                                </tr>
                            </thead>
@@ -251,14 +258,14 @@ export default function CartPage() {
 
                                    <td align={"center"}>
                                        <Button
-                                           onClick={() => moreOfThisProduct(product._id)
-                                           }>+</Button>
+                                           onClick={() => lessOfThisProduct(product._id)}
+                                       >-</Button>
                                        <QuantityLabel>
                                            {cartProducts.filter(id => id === product._id).length}
                                        </QuantityLabel>
                                        <Button
-                                           onClick={() => lessOfThisProduct(product._id)}
-                                       >-</Button>
+                                           onClick={() => moreOfThisProduct(product._id)
+                                           }>+</Button>
                                    </td>
                                    <td>{numberWithCommas(cartProducts.filter(id => id === product._id).length * product.price)} USD</td>
                                </tr>

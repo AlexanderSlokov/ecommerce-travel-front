@@ -64,7 +64,20 @@ export function CartContextProvider({children}) {
                     confirmButtonText: 'Okay'
                 });
                 return true; // There is an overlap
+            }
 
+            // Check for close durations (less than 2 days apart)
+            const dayInMilliseconds = 24 * 60 * 60 * 1000;
+            const minGap = 2 * dayInMilliseconds;
+            if (Math.abs(existingProductEndDate - newProductStartDate) < minGap ||
+                Math.abs(existingProductStartDate - newProductEndDate) < minGap) {
+                await Swal.fire({
+                    title: 'Warning!',
+                    text: 'This tour is scheduled too close to another tour in your cart. Please allow at least a 2-day gap between tours.',
+                    icon: 'warning',
+                    confirmButtonText: 'Okay'
+                });
+                return true; // Tours are too close in duration
             }
         }
         return false; // No overlaps

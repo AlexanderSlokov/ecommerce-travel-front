@@ -12,16 +12,19 @@ import Spinner from "@/components/Spinner";
 
 const CategoryHeader  = styled.div`
     display: flex;
-  align-items: center;
-  justify-content: space-between;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
   h1{
     font-size: 1.5rem;
   }
 `;
 
 const FilterWrapper = styled.div`
-  display: flex;
-  gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
 `;
 
 const Filter = styled.div`
