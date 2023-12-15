@@ -13,7 +13,7 @@ const StyledGif = styled.img`
     width: 300px;
     height: auto;
     animation: fadeInOut 5s; // Adjust the time as needed
-
+    background: transparent;
     @keyframes fadeInOut {
         0% { opacity: 0; }
         20% { opacity: 1; }
@@ -25,7 +25,7 @@ const StyledGif = styled.img`
 export default function Spinner({ fullWidth }) {
     return (
         <Wrapper fullWidth={fullWidth}>
-            <StyledGif src="/herta-honkai-star-rail.gif" alt="Loading..." />
+            <StyledGif src="/output-onlinegiftools.gif" alt="Loading..." />
         </Wrapper>
     );
 }
