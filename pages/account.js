@@ -92,7 +92,7 @@ export default function AccountPage() {
             setAccountInfoLoaded(true);
         });
 
-        // also load wished product into wishlist section of account page
+        // also a load wished product into a wishlist section of account page
         axios.get('/api/wishlist').then(r =>{
             // console.log(r.data);
             setWishedProducts(r.data.map(wp => wp.product));
@@ -154,7 +154,7 @@ export default function AccountPage() {
                                                 // Show spinner while orders are loading
                                                 <Spinner fullWidth={true}/>
                                             ) : orders.length === 0 ? (
-                                                // Show message if there are no orders
+                                                // Show a message if there are no orders
                                                 <p>Maybe we can buy something?</p>
                                             ) : (
                                                 // Show orders if they exist
@@ -167,10 +167,10 @@ export default function AccountPage() {
                                     {activeTab === 'Wishlist' && (
                                         <>
                                             {!wishListLoaded ? (
-                                                // Show spinner while wishlist is loading
+                                                // Show spinner while the wishlist is loading
                                                 <Spinner fullWidth={true}/>
                                             ) : wishedProducts.length === 0 ? (
-                                                // Show message if wishlist is empty
+                                                // Show a message if the wishlist is empty
                                                 <p>Maybe we can hang out a bit and see what tour you will be interested in, yes?</p>
                                             ) : (
                                                 // Show wished products if they exist
