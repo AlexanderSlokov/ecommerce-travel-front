@@ -110,7 +110,7 @@ export default function Featured({product}) {
                             <h2>On the spotlight of this month:</h2>
                             <Title> {product.title}</Title>
 
-                            {/*<Desc>{product.description}</Desc>*/}
+                            <Desc>{product.destination}</Desc>
 
                             <ButtonsWrapper>
                                 <ButtonLink href = {'/products/' + product._id} outline={1} white={1}>Find out more</ButtonLink>
