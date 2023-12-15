@@ -83,7 +83,7 @@ export default async function handler(req, res) {
 
     // Calculate the service fee in cents as a fixed amount
     const serviceFee = Math.round(totalAmount * serviceFeePercentage / 100);
-    const displayName = `Service Maintaining Fee (Charged ${serviceFeePercentage}%, this term is mentioned in cart section.)`;
+    const displayName = `VAT (Charged ${serviceFeePercentage}%, since Stripe has not support VAT calculation for business at Vietnam yet.)`;
 
     // Create a Stripe checkout session with the line items and other details
     const StripeSession = await stripe.checkout.sessions.create({
@@ -94,15 +94,15 @@ export default async function handler(req, res) {
         cancel_url:process.env.PUBLIC_URL + '/cart?canceled=1',
         metadata:{bookingId:bookingDoc._id.toString(), test:'ok'},
         allow_promotion_codes:true,
-        shipping_options:[
-            {
-                shipping_rate_data:{
-                    display_name:displayName,
-                    type:"fixed_amount",
-                    fixed_amount:{amount: serviceFee,currency:'USD'}
-                }
-            }
-        ]
+        // shipping_options:[
+        //     {
+        //         shipping_rate_data:{
+        //             display_name:displayName,
+        //             type:"fixed_amount",
+        //             fixed_amount:{amount: serviceFee,currency:'USD'}
+        //         }
+        //     }
+        // ]
     });
 
     res.json({

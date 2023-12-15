@@ -160,7 +160,7 @@ export default function CartPage() {
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [pickUpAddress, setPickUpAddress] = useState('');
-    const [serviceFee, setServiceFee] = useState(null);
+    // const [serviceFee, setServiceFee] = useState(null);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -189,7 +189,7 @@ export default function CartPage() {
         }
         axios.get('/api/settings?name=serviceFee').then(r => {
             setIsLoading(false)
-            setServiceFee(r.data.value);
+            // setServiceFee(r.data.value);
         })
     }, []);
 
@@ -215,15 +215,16 @@ export default function CartPage() {
         removeProduct(id);
     }
 
-    function feeCalc(total, fee){
-        // Return the service fee as a number, not as a fixed string.
-        return (total * (fee / 100)).toFixed(2);
-    }
+    // function feeCalc(total, fee){
+    //     // Return the service fee as a number, not as a fixed string.
+    //     return (total * (fee / 100)).toFixed(2);
+    // }
 
-    function totalSum(total, fee){
-        // Make sure both total and fee are numbers and add them.
-        return parseFloat(total) + parseFloat(fee);
-    }
+    // function totalSum(total, fee){
+    //     // Make sure both total and fee are numbers and add them.
+    //     // return parseFloat(total) + parseFloat(fee);
+    //     return parseFloat(total);
+    // }
 
     const toggleAccordion = (index) => {
         setActiveAccordion(activeAccordion === index ? null : index);
@@ -356,24 +357,25 @@ export default function CartPage() {
                                         <td>{numberWithCommas(total)} USD</td>
                                     </tr>
 
-                                    <tr className={"subtotal"}>
-                                        <td colSpan={2}>Service Maintaining Fee: <br/> <br/>
-                                            {serviceFee}% of the booking price.<br/> <br/>
-                                            This fee contributes to: <br/>
-                                            * Employee salary payments. <br/>
-                                            * Web server maintenance.<br/>
-                                            * Transaction fees for using Stripe's payment platform.<br/>
-                                            * Services enhancing your experience, such as tour arrangements and guide fees.<br/>
-                                            <br/>
-                                            (Note: This fee is essential for providing high-quality services and is not merely for profit.)<br/>
+                                    {/*<tr className={"subtotal"}>*/}
+                                    {/*    <td colSpan={2}>Service Maintaining Fee: <br/> <br/>*/}
+                                    {/*        {serviceFee}% of the booking price.<br/> <br/>*/}
+                                    {/*        This fee contributes to: <br/>*/}
+                                    {/*        * Employee salary payments. <br/>*/}
+                                    {/*        * Web server maintenance.<br/>*/}
+                                    {/*        * Transaction fees for using Stripe's payment platform.<br/>*/}
+                                    {/*        * Services enhancing your experience, such as tour arrangements and guide fees.<br/>*/}
+                                    {/*        <br/>*/}
+                                    {/*        (Note: This fee is essential for providing high-quality services and is not merely for profit.)<br/>*/}
 
-                                        </td>
-                                        <td>{feeCalc(total, serviceFee)} USD</td>
-                                    </tr>
+                                    {/*    </td>*/}
+                                    {/*    <td>{feeCalc(total, serviceFee)} USD</td>*/}
+                                    {/*</tr>*/}
 
                                     <tr className={"total"}>
                                         <td colSpan={2}> Total:</td>
-                                        <td>{numberWithCommas(totalSum(total, feeCalc(total, serviceFee)).toFixed(2))} USD</td>
+                                        {/*<td>{numberWithCommas(totalSum(total, feeCalc(total, serviceFee)).toFixed(2))} USD</td>*/}
+                                        <td>{numberWithCommas(total)} USD</td>
                                     </tr>
                                     </tbody>
                                 </Table>
